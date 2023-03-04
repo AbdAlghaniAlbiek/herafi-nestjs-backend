@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import {
 	IsEmail,
@@ -105,3 +106,5 @@ export class CreatePerson {
 	@AutoMappedApiProperty()
 	public highestCost: number;
 }
+
+export class UpdatePerson extends PartialType(CreatePerson) {}
