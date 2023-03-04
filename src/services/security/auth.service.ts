@@ -1,12 +1,8 @@
-import {
-	BadRequestException,
-	Injectable,
-	InternalServerErrorException
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePerson } from 'src/data/dtos/person.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { AuthUser } from 'src/data/dtos/auth.dto';
+import { AuthPerson } from 'src/data/dtos/auth.dto';
 import { HashCryptography } from './cryptography/hash.crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from 'src/data/entities/person.entity';
@@ -15,6 +11,7 @@ import { JwtConfig } from 'src/configurations/config.interfaces';
 import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
+import { CRUD } from 'src/helpers/constants/crud.contants';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +26,7 @@ export class AuthService {
 	async signUp(createPerson: CreatePerson): Promise<any> {
 		try {
 			// Check if user exists
-			const userExists = await this.personRepo.findOneByOrFail({
+			const userExists = await this.personRepo.findOneBy({
 				email: createPerson.email
 			});
 
@@ -61,38 +58,68 @@ export class AuthService {
 			);
 
 			await this.updateRefreshToken(newPerson.id, tokens.refreshToken);
-
-			return tokens;
+			return tokens.accessToken;
 		} catch (err) {
-			throw new InternalServerErrorException(`${err}`);
+			ResultMessages.failedCRUD(
+				`Person with name: ${createPerson.firstName} ${createPerson.lastName}`,
+				CRUD.create,
+				`${err}`
+			);
 		}
 	}
 
-	async signIn(data: AuthUser) {
-		// Check if person exists
-		const person = await this.personRepo.findOneBy({ email: data.email });
-		if (!person)
-			throw new BadRequestException(ResultMessages.itemNotFound('User'));
+	async signIn(data: AuthPerson) {
+		try {
+			// Check if person exists
+			const person = await this.personRepo.findOneBy({
+				email: data.email
+			});
+			if (!person)
+				throw new BadRequestException(
+					ResultMessages.itemNotFound('User', '')
+				);
 
-		/* Compare if the sended password from person is actually equally to his registered hashed password in db */
-		const passwordMatches = this.verifyPlainAndHashedData(
-			data.password,
-			person.password
-		);
-		if (!passwordMatches)
-			throw new BadRequestException('Password is incorrect');
+			/* Compare if the sended password from person is actually equally to his registered hashed password in db */
+			const passwordMatches = this.verifyPlainAndHashedData(
+				data.password,
+				person.password
+			);
+			if (!passwordMatches)
+				throw new BadRequestException('Password is incorrect');
 
-		const tokens = await this.getTokens(
-			person.id,
-			`${person.firstName} ${person.lastName}`,
-			[person.role.personRole.toString()]
-		);
-		await this.updateRefreshToken(person.id, tokens.refreshToken);
-		return tokens;
+			const tokens = await this.getTokens(
+				person.id,
+				`${person.firstName} ${person.lastName}`,
+				[person.role.personRole.toString()]
+			);
+			await this.updateRefreshToken(person.id, tokens.refreshToken);
+			return tokens.accessToken;
+		} catch (err) {
+			ResultMessages.failedCRUD(
+				`Person with email: `,
+				CRUD.Update,
+				`${err}`
+			);
+		}
 	}
 
-	async logout(personId: string) {
-		return this.personRepo.update(personId, { refreshToken: null });
+	// Note: when you use Mongo db you must convert "personId" type to "string"
+	async logout(personId: number) {
+		try {
+			this.personRepo.update(personId, { refreshToken: null });
+
+			return ResultMessages.successCRUD(
+				`Person with: ${personId}`,
+				CRUD.Update,
+				''
+			);
+		} catch (err) {
+			ResultMessages.failedCRUD(
+				`Person with id: ${personId}`,
+				CRUD.Update,
+				`${err}`
+			);
+		}
 	}
 
 	async hashData(data: string) {

@@ -1,16 +1,33 @@
 import { CRUD } from './crud.contants';
 
 export class ResultMessages {
-	public static itemNotFound(info: string): string {
-		return `${info} not found`;
+	public static itemNotFound(
+		entityInfo: string,
+		completeInfo: string
+	): string {
+		return completeInfo
+			? `${entityInfo} not found`
+			: `${entityInfo} not found > Complete info: ${completeInfo}`;
 	}
 
-	public static successCRUD(info: string, crud: CRUD): string {
-		return `${info} has been ${crud}d successfully`;
+	public static successCRUD(
+		entityInfo: string,
+		crud: CRUD,
+		completeInfo: string
+	): string {
+		return completeInfo
+			? `${entityInfo} has been ${crud}d successfully`
+			: `${entityInfo} has been ${crud}d successfully > Complete info: ${completeInfo}`;
 	}
 
-	public static failedCRUD(info: string, crud: CRUD): string {
-		return `${info} hasn't been ${crud}d`;
+	public static failedCRUD(
+		entityInfo: string,
+		crud: CRUD,
+		completeInfo: string
+	): string {
+		return completeInfo
+			? `Fortunatlly ${entityInfo} hasn't been ${crud}d`
+			: `Fortunatlly ${entityInfo} hasn't been ${crud}d > Complete info: ${completeInfo}`;
 	}
 
 	public static UserIsAlreadyExist(): string {

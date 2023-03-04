@@ -32,6 +32,11 @@ import { CoreModule } from './services/core.module';
 import { NodeSetupConfig } from './services/config/node-setup.config';
 import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
 
+import { AdminDesktopModule } from './apps/admin-desktop/admin-desktop.module';
+import { CraftmanMobileModule } from './apps/craftman-mobile/craftman-mobile.module';
+import { UserMobileModule } from './apps/user-mobile/user-mobile.module';
+import { CommonControllersModule } from './apps/common/common-controllers.module';
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -66,21 +71,22 @@ import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
 		AutomapperModule.forRoot({
 			strategyInitializer: classes()
 		}),
-		CoreModule
-		// RouterModule.register([
-		// 	{
-		// 		path: 'admin',
-		// 		module: adminDesktopModule
-		// 	},
-		// 	{
-		// 		path: 'craftman',
-		// 		module: craftmanMobileModule
-		// 	},
-		// 	{
-		// 		path: 'user',
-		// 		module: userMobileModule
-		// 	}
-		// ])
+		CoreModule,
+		RouterModule.register([
+			{
+				path: 'admin',
+				module: AdminDesktopModule
+			},
+			{
+				path: 'craftman',
+				module: CraftmanMobileModule
+			},
+			{
+				path: 'user',
+				module: UserMobileModule
+			}
+		]),
+		CommonControllersModule
 	],
 	providers: [
 		{

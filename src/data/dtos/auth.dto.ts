@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 import { AutoMappedApiProperty } from 'src/helpers/decorators/swagger.decorator';
 
-export class AuthUser {
+export class AuthPerson {
 	@IsEmail({ domain_specific_validation: true })
 	@IsNotEmpty()
 	@AutoMappedApiProperty()
