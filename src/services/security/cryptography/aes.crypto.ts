@@ -36,7 +36,7 @@ export class AESCryptography {
 		private iv: any
 	) {}
 
-	public Encryption(plainText: string): Promise<string> {
+	public encryption(plainText: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
 				const key = Buffer.from(this.key, this.encryptionEncoding);
@@ -61,7 +61,7 @@ export class AESCryptography {
 		});
 	}
 
-	public Decryption(cipherText: string): Promise<string> {
+	public decryption(cipherText: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
 				const buff = Buffer.from(cipherText, this.bufferEncryption);

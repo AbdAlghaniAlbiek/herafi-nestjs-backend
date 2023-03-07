@@ -15,28 +15,31 @@ import {
 	ApiController,
 	ApiHttpResponse
 } from 'src/helpers/decorators/swagger.decorator';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Person } from 'src/data/entities/person.entity';
 import { ApiBody, ApiParam } from '@nestjs/swagger';
-import { CreatePerson, UpdatePerson } from 'src/data/dtos/person.dto';
+import {
+	CreatePersonDto,
+	ReadPersonDto,
+	UpdatePersonDto
+} from 'src/data/dtos/person.dto';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { CRUD } from 'src/helpers/constants/crud.contants';
+import { PersonRepo } from 'src/data/repositories/controllers-repos/common-repos/person.repo';
 
 @ApiController({ path: 'person', version: VERSION_NEUTRAL })
 export class PersonController {
 	constructor(
-		@InjectRepository(Person) private personRepo: Repository<Person>,
+		private readonly personRepo: PersonRepo,
 		@InjectMapper() private readonly mapper: Mapper
 	) {}
 
 	@Get('')
 	@ApiHttpResponse(HttpStatus.OK, 'This route for getting all persons in db')
-	public GetAll(): Promise<Person[]> {
+	public getAll(): Promise<ReadPersonDto[]> {
 		try {
-			return this.personRepo.find();
+			return this.personRepo.getAll();
 		} catch (err) {
 			throw new InternalServerErrorException(`${err}`);
 		}
@@ -47,33 +50,14 @@ export class PersonController {
 		HttpStatus.CREATED,
 		'this route for creating new person into Herafi system'
 	)
-	@ApiBody({ type: CreatePerson, required: true, examples: {} })
-	public async create(@Body() createPerson: CreatePerson): Promise<string> {
+	@ApiBody({ type: CreatePersonDto, required: true, examples: {} })
+	public async create(
+		@Body() createPerson: CreatePersonDto
+	): Promise<string> {
 		try {
-			const existedPerson = this.personRepo.findOneBy({
-				email: createPerson.email
-			});
-			if (existedPerson) return ResultMessages.UserIsAlreadyExist();
-
-			const person = await this.mapper.mapAsync(
-				createPerson,
-				CreatePerson,
-				Person
-			);
-
-			return ResultMessages.successCRUD(
-				`Person with email: ${person.email}`,
-				CRUD.create,
-				''
-			);
+			return this.personRepo.create(createPerson);
 		} catch (err) {
-			throw new InternalServerErrorException(
-				ResultMessages.failedCRUD(
-					`Person with email: ${createPerson.email}`,
-					CRUD.create,
-					`${err}`
-				)
-			);
+			throw new InternalServerErrorException(`${err}`);
 		}
 	}
 
@@ -81,7 +65,7 @@ export class PersonController {
 	@ApiHttpResponse(
 		HttpStatus.OK,
 		'this route for updating existing person',
-		UpdatePerson.name.toString()
+		UpdatePersonDto.name.toString()
 	)
 	@ApiParam({
 		example: 1,
@@ -90,10 +74,10 @@ export class PersonController {
 		type: Number,
 		name: 'id'
 	})
-	@ApiBody({ type: UpdatePerson, required: true, examples: {} })
+	@ApiBody({ type: UpdatePersonDto, required: true, examples: {} })
 	public async update(
 		@Param('id', ParseIntPipe) id: number,
-		@Body() updatePerson: UpdatePerson
+		@Body() updatePerson: UpdatePersonDto
 	): Promise<string> {
 		try {
 			const person = await this.personRepo.findOneBy({ id });

@@ -41,3 +41,8 @@ export interface MailConfig {
 	AUTH_USER: string;
 	AUTH_PASSWORD: string;
 }
+
+export interface RedisConfig {
+	HOST: string;
+	PORT: string;
+}

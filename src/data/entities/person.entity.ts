@@ -62,7 +62,7 @@ export class Person {
 	public secureId: number;
 
 	@AutoMappedColumn()
-	public verifyCode: number;
+	public verifyCode: string;
 
 	@AutoMappedColumn()
 	public identityNumber: string;

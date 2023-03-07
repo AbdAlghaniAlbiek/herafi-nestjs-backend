@@ -30,11 +30,23 @@ export class ResultMessages {
 			: `Fortunatlly ${entityInfo} hasn't been ${crud}d > Complete info: ${completeInfo}`;
 	}
 
-	public static UserIsAlreadyExist(): string {
+	public static userIsAlreadyExist(): string {
 		return 'User is already exist';
 	}
 
-	public static ForbiddenAccessOnThisResource(): string {
+	public static unauthorizedUser() {
+		return 'Unauthorized user';
+	}
+
+	public static forbiddenAccessOnThisResource(): string {
 		return 'Forbidden access on this resource';
+	}
+
+	public static errorOccursWhenQueryDb(completeInfo: string) {
+		return `Error occurs when query db > Complete info: ${completeInfo}`;
+	}
+
+	public static passwordIsIncorrect() {
+		return 'password is incorrect';
 	}
 }

@@ -17,12 +17,12 @@ import {
 import { HashCryptography } from 'src/services/security/cryptography/hash.crypto';
 import { AccessTokenStrategy } from 'src/services/security/strategies/access-token.strategy';
 import { RefreshTokenStrategy } from 'src/services/security/strategies/refresh-token.strategy';
-import { AuthService } from './auth.service';
+import { AuthRepo } from '../../data/repositories/controllers-repos/common-repos/auth.repo';
 
 @Module({
 	imports: [JwtModule.register({})],
 	exports: [
-		AuthService,
+		AuthRepo,
 		AESCryptography,
 		HashCryptography,
 		AccessTokenStrategy,

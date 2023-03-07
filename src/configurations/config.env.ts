@@ -1,4 +1,4 @@
-import envFilePath from '../helpers/env-resolver/env-path-resolver';
+import envFilePath from '../helpers/resolvers/env-path.resolver';
 import { resolve } from 'path';
 
 envFilePath(resolve(process.cwd(), '.env'));
@@ -59,4 +59,19 @@ function mailConfig() {
 	};
 }
 
-export { nodeConfig, aesConfig, hashConfig, jwtConfig, pgConfig, mailConfig };
+function redisConfig() {
+	return {
+		HOST: process.env.REDIS_HOST,
+		PORT: process.env.REDIS_PORT
+	};
+}
+
+export {
+	nodeConfig,
+	aesConfig,
+	hashConfig,
+	jwtConfig,
+	pgConfig,
+	mailConfig,
+	redisConfig
+};

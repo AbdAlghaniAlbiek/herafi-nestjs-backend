@@ -1,6 +1,7 @@
 import { classes } from '@automapper/classes';
 import { AutomapperModule } from '@automapper/nestjs';
 import {
+	CacheModule,
 	ClassSerializerInterceptor,
 	Module,
 	ValidationPipe
@@ -23,12 +24,16 @@ import {
 	jwtConfig,
 	mailConfig,
 	nodeConfig,
-	pgConfig
+	pgConfig,
+	redisConfig
 } from './configurations/config.env';
-import { PostgresConfig } from './configurations/config.interfaces';
-import { HttpExceptionFilter } from './helpers/errors/exception-filter';
+import {
+	PostgresConfig,
+	RedisConfig
+} from './configurations/config.interfaces';
+import { HttpExceptionFilter } from './helpers/security/errors/exception-filter';
 import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
-import { CoreModule } from './services/core.module';
+import { CoreServicesModule } from './services/core-services.module';
 import { NodeSetupConfig } from './services/config/node-setup.config';
 import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
 
@@ -36,6 +41,12 @@ import { AdminDesktopModule } from './apps/admin-desktop/admin-desktop.module';
 import { CraftmanMobileModule } from './apps/craftman-mobile/craftman-mobile.module';
 import { UserMobileModule } from './apps/user-mobile/user-mobile.module';
 import { CommonControllersModule } from './apps/common/common-controllers.module';
+import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
 	imports: [
@@ -49,7 +60,8 @@ import { CommonControllersModule } from './apps/common/common-controllers.module
 				jwtConfig,
 				mailConfig,
 				nodeConfig,
-				pgConfig
+				pgConfig,
+				redisConfig
 			]
 		}),
 		TypeOrmModule.forRootAsync({
@@ -71,7 +83,27 @@ import { CommonControllersModule } from './apps/common/common-controllers.module
 		AutomapperModule.forRoot({
 			strategyInitializer: classes()
 		}),
-		CoreModule,
+		BullModule.forRootAsync({
+			useFactory: (redisConfig: ConfigService<RedisConfig>) => ({
+				redis: {
+					host: redisConfig.get('HOST'),
+					port: redisConfig.get('PORT')
+				}
+			}),
+			inject: [ConfigService]
+		}),
+		ScheduleModule.forRoot(),
+		EventEmitterModule.forRoot(),
+		CacheModule.registerAsync({
+			useFactory: (redisConfig: ConfigService<RedisConfig>) =>
+				<RedisClientOptions>{
+					isGlobal: true,
+					store: redisStore,
+					host: redisConfig.get('HOST'),
+					port: redisConfig.get('PORT')
+				},
+			inject: [ConfigService]
+		}),
 		RouterModule.register([
 			{
 				path: 'admin',
@@ -86,6 +118,8 @@ import { CommonControllersModule } from './apps/common/common-controllers.module
 				module: UserMobileModule
 			}
 		]),
+		MulterModule.register({}),
+		CoreServicesModule,
 		CommonControllersModule
 	],
 	providers: [

@@ -8,4 +8,4 @@ import { SecurityModule } from './security/security.module';
 @Module({
 	imports: [SecurityModule, DataModule, ConfigHelperModule]
 })
-export class CoreModule {}
+export class CoreServicesModule {}

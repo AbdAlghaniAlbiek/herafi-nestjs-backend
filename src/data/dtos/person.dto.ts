@@ -15,7 +15,7 @@ import {
 	MaxLength
 } from 'class-validator';
 import { AutoMappedApiProperty } from 'src/helpers/decorators/swagger.decorator';
-export class CreatePerson {
+export class CreatePersonDto {
 	@IsNotEmpty()
 	@IsEmail({ domain_specific_validation: true })
 	@AutoMappedApiProperty()
@@ -107,4 +107,6 @@ export class CreatePerson {
 	public highestCost: number;
 }
 
-export class UpdatePerson extends PartialType(CreatePerson) {}
+export class UpdatePersonDto extends PartialType(CreatePersonDto) {}
+
+export class ReadPersonDto extends PartialType(CreatePersonDto) {}

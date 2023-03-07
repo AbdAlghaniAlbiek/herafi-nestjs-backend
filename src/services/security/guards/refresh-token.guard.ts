@@ -9,16 +9,21 @@ import {
 	InternalServerErrorException,
 	UnauthorizedException
 } from '@nestjs/common/exceptions';
-import { AuthService } from 'src/services/security/auth.service';
+import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
+import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
+import { AESCryptography } from '../cryptography/aes.crypto';
 
 @Injectable()
 export class RefreshTokenAuthGuard extends AuthGuard('jwt-refresh') {
 	constructor(
 		@InjectRepository(Person) private personRepo: Repository<Person>,
-		private readonly authService: AuthService
+		private authRepo: AuthRepo,
+		private aesService: AESCryptography
 	) {
 		super();
 	}
+
+	private refreshToken: string;
 
 	canActivate(context: ExecutionContext) {
 		const req = context.switchToHttp().getRequest();
@@ -27,7 +32,9 @@ export class RefreshTokenAuthGuard extends AuthGuard('jwt-refresh') {
 		this.personRepo
 			.findOneBy({ id: req.user['sub'] })
 			.then((person) => {
-				req.headers['Authorization'] = person.refreshToken;
+				req.headers['Authorization'] = this.aesService.decryption(
+					person.refreshToken
+				);
 				return super.canActivate(context);
 			})
 			.catch((err) => {
@@ -37,10 +44,10 @@ export class RefreshTokenAuthGuard extends AuthGuard('jwt-refresh') {
 
 	handleRequest(err, user, info: Error) {
 		if (info instanceof TokenExpiredError) {
-			throw new UnauthorizedException('Unauthorized user');
+			throw new UnauthorizedException(ResultMessages.unauthorizedUser());
 		}
 
-		this.authService.updateRefreshToken(user['sub'], user.refreshToken);
+		this.authRepo.updateRefreshToken(user['sub'], user.refreshToken);
 
 		return user;
 	}
