@@ -17,6 +17,7 @@ import { SwaggerDocuments } from './helpers/documents/swagger.document';
 import { NodeConfig } from './configurations/config.interfaces';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { Environment } from './helpers/constants/environments.constants';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {

@@ -3,31 +3,31 @@ import { CRUD } from './crud.contants';
 export class ResultMessages {
 	public static itemNotFound(
 		entityInfo: string,
-		completeInfo: string
+		additionalInfo: string
 	): string {
-		return completeInfo
+		return additionalInfo
 			? `${entityInfo} not found`
-			: `${entityInfo} not found > Complete info: ${completeInfo}`;
+			: `${entityInfo} not found > Additional info: ${additionalInfo}`;
 	}
 
 	public static successCRUD(
 		entityInfo: string,
 		crud: CRUD,
-		completeInfo: string
+		additionalInfo: string
 	): string {
-		return completeInfo
+		return additionalInfo
 			? `${entityInfo} has been ${crud}d successfully`
-			: `${entityInfo} has been ${crud}d successfully > Complete info: ${completeInfo}`;
+			: `${entityInfo} has been ${crud}d successfully > Additional info: ${additionalInfo}`;
 	}
 
 	public static failedCRUD(
 		entityInfo: string,
 		crud: CRUD,
-		completeInfo: string
+		additionalInfo: string
 	): string {
-		return completeInfo
+		return additionalInfo
 			? `Fortunatlly ${entityInfo} hasn't been ${crud}d`
-			: `Fortunatlly ${entityInfo} hasn't been ${crud}d > Complete info: ${completeInfo}`;
+			: `Fortunatlly ${entityInfo} hasn't been ${crud}d > Additional info: ${additionalInfo}`;
 	}
 
 	public static userIsAlreadyExist(): string {
@@ -42,11 +42,23 @@ export class ResultMessages {
 		return 'Forbidden access on this resource';
 	}
 
-	public static errorOccursWhenQueryDb(completeInfo: string) {
-		return `Error occurs when query db > Complete info: ${completeInfo}`;
+	public static errorOccursWhenQueryDb(additionalInfo: string) {
+		return `Error occurs when query db > Additional info: ${additionalInfo}`;
 	}
 
 	public static passwordIsIncorrect() {
 		return 'password is incorrect';
+	}
+
+	public static EmailSendingFailed(additionalInfo: string) {
+		return `Error in sending email to user > Additional info: ${additionalInfo}`;
+	}
+
+	public static EmailSendingSuccess(additionalInfo: string) {
+		return `Email is sended successfuly > Additional info: ${additionalInfo}`;
+	}
+
+	public static QueueAddingJobFailed(additionalInfo: string) {
+		return `Error in sending email > Additional info: ${additionalInfo}`;
 	}
 }

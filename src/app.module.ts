@@ -43,10 +43,9 @@ import { UserMobileModule } from './apps/user-mobile/user-mobile.module';
 import { CommonControllersModule } from './apps/common/common-controllers.module';
 import { BullModule } from '@nestjs/bull';
 import { ScheduleModule } from '@nestjs/schedule';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RedisClientOptions } from 'redis';
 import * as redisStore from 'cache-manager-redis-store';
-import { MulterModule } from '@nestjs/platform-express';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
 	imports: [
@@ -93,7 +92,6 @@ import { MulterModule } from '@nestjs/platform-express';
 			inject: [ConfigService]
 		}),
 		ScheduleModule.forRoot(),
-		EventEmitterModule.forRoot(),
 		CacheModule.registerAsync({
 			useFactory: (redisConfig: ConfigService<RedisConfig>) =>
 				<RedisClientOptions>{
@@ -118,7 +116,7 @@ import { MulterModule } from '@nestjs/platform-express';
 				module: UserMobileModule
 			}
 		]),
-		MulterModule.register({}),
+		EventEmitterModule.forRoot({ global: true }),
 		CoreServicesModule,
 		CommonControllersModule
 	],

@@ -53,6 +53,7 @@ function mailConfig() {
 	return {
 		HOST: process.env.MAIL_HOST,
 		PORT: process.env.MAIL_PORT,
+		DEFAULT_FROM_USER: process.env.MAIL_DEFAULT_FROM_USER,
 		IS_SECURE: Boolean(process.env.MAIL_IS_SECURE),
 		AUTH_USER: process.env.MAIL_AUTH_USER,
 		AUTH_PASSWORD: process.env.MAIL_AUTH_PASSWORD

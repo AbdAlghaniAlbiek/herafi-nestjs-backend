@@ -12,9 +12,12 @@ import {
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
 import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { AESCryptography } from '../cryptography/aes.crypto';
+import { StrategiesSpecifics } from 'src/helpers/constants/strategies-specifics.constants';
 
 @Injectable()
-export class RefreshTokenAuthGuard extends AuthGuard('jwt-refresh') {
+export class RefreshTokenAuthGuard extends AuthGuard(
+	StrategiesSpecifics.RefreshToken
+) {
 	constructor(
 		@InjectRepository(Person) private personRepo: Repository<Person>,
 		private authRepo: AuthRepo,
@@ -22,8 +25,6 @@ export class RefreshTokenAuthGuard extends AuthGuard('jwt-refresh') {
 	) {
 		super();
 	}
-
-	private refreshToken: string;
 
 	canActivate(context: ExecutionContext) {
 		const req = context.switchToHttp().getRequest();

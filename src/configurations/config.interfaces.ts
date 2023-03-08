@@ -38,6 +38,7 @@ export interface MailConfig {
 	HOST: string;
 	PORT: string;
 	IS_SECURE: boolean;
+	DEFAULT_FROM_USER: string;
 	AUTH_USER: string;
 	AUTH_PASSWORD: string;
 }
