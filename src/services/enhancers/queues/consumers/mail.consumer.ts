@@ -46,7 +46,7 @@ export class MailQueueConsumer {
 		);
 	}
 
-	@Process(ProcessNames.Confirmation)
+	@Process(ProcessNames.SendEmailConfirmation)
 	async sendEmail(job: Job): Promise<any> {
 		this.mailEvents.emit(
 			MailEvents.MailSendedEvent,

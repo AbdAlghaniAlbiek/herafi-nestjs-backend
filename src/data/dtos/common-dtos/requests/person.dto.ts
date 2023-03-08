@@ -18,7 +18,7 @@ import { AutoMappedApiProperty } from 'src/helpers/decorators/swagger.decorator'
 export class CreatePersonDto {
 	@IsNotEmpty()
 	@IsEmail({ domain_specific_validation: true })
-	@AutoMappedApiProperty()
+	@AutoMappedApiProperty({})
 	public email: string;
 
 	@IsString()
@@ -87,7 +87,7 @@ export class CreatePersonDto {
 	@IsOptional()
 	@IsNumber()
 	@AutoMappedApiProperty()
-	public verifyCode: number;
+	public verifyCode: string;
 
 	@IsNotEmpty()
 	@IsString()
@@ -108,5 +108,3 @@ export class CreatePersonDto {
 }
 
 export class UpdatePersonDto extends PartialType(CreatePersonDto) {}
-
-export class ReadPersonDto extends PartialType(CreatePersonDto) {}

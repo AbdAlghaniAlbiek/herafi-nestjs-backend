@@ -1,9 +1,7 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
-import { PersonRepo } from 'src/data/repositories/controllers-repos/common-repos/person.repo';
 import { AuthController } from './controllers/auth.controller';
-import { PersonController } from './controllers/person.controller';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
 import { MailConfig, RedisConfig } from 'src/configurations/config.interfaces';
@@ -50,7 +48,7 @@ import { QueuesNames } from 'src/helpers/constants/queues.constants';
 		}),
 		MulterModule.register({})
 	],
-	controllers: [AuthController, PersonController],
-	providers: [AuthRepo, PersonRepo]
+	controllers: [AuthController],
+	providers: [AuthRepo]
 })
 export class CommonControllersModule {}

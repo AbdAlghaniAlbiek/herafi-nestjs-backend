@@ -6,9 +6,9 @@ import {
 } from 'src/helpers/decorators/swagger.decorator';
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
 import { HttpStatus } from '@nestjs/common/enums';
-import { CreatePersonDto } from 'src/data/dtos/person.dto';
+import { CreatePersonDto } from 'src/data/dtos/common-dtos/requests/person.dto';
 import { ApiBody, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { AuthPerson } from 'src/data/dtos/auth.dto';
+import { AuthPerson } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { Authenticated } from 'src/helpers/decorators/auth.decorator';
@@ -20,31 +20,18 @@ export class AuthController {
 	@Post('sign-up')
 	@ApiHttpResponse(
 		HttpStatus.CREATED,
-		'Registering a new user to db',
+		'Registering a new person to db',
 		CreatePersonDto.name.toString()
 	)
-	@ApiBody({ type: CreatePersonDto, required: true, examples: {} })
+	@ApiBody({
+		type: CreatePersonDto,
+		required: true,
+		description: 'person object that comes from client applications'
+	})
 	public async SignUp(
 		@Body() createPersonDto: CreatePersonDto
 	): Promise<string> {
-		const repoResult = await this.authService.signUp(createPersonDto);
-		if (repoResult.error) {
-			throw new InternalServerErrorException(`${repoResult.error}`);
-		}
-
-		return repoResult.result;
-	}
-
-	@Post('sign-in')
-	@ApiHttpResponse(HttpStatus.OK, 'Login any person to herafi system')
-	@ApiBody({ type: AuthPerson, required: true, examples: {} })
-	public async SignIn(@Body() authPerson: AuthPerson): Promise<string> {
-		const repoResult = await this.authService.signIn(authPerson);
-		if (repoResult.error) {
-			throw new InternalServerErrorException(`${err}`);
-		}
-
-		return repoResult.result;
+		return this.authService.signUp(createPersonDto);
 	}
 
 	@Authenticated()
@@ -56,38 +43,37 @@ export class AuthController {
 	@ApiQuery({
 		name: 'verify_code',
 		description:
-			'verify code is about like multiple numbers that complete user registeration in Herafi system'
+			'verify code is about like multiple numbers that complete user registeration in Herafi system',
+		required: true,
+		type: String
 	})
 	@ApiParam({
 		name: 'personId',
-		description: 'id of person that matched in db'
+		description: 'id of person that matched in db',
+		type: Number,
+		required: true
 	})
 	public async verifyAccount(
 		@Param('id', ParseIntPipe) personId: number,
 		@Query('verify_code') verifyCode: string
 	): Promise<string> {
-		const repoResult = await this.authService.verifAccount(
-			personId,
-			verifyCode
-		);
+		return this.authService.verifAccount(personId, verifyCode);
+	}
 
-		try {
-		} catch (err) {
-			throw new InternalServerErrorException(`${err}`);
-		}
+	@Post('sign-in')
+	@ApiHttpResponse(HttpStatus.OK, 'Login any person to Herafi system')
+	@ApiBody({ type: AuthPerson, required: true })
+	public async SignIn(@Body() authPerson: AuthPerson): Promise<string> {
+		return this.authService.signIn(authPerson);
 	}
 
 	@Post('logout/:personId')
-	@ApiHttpResponse(
-		HttpStatus.OK,
-		'"log-out/:personId" route for making any person to logout from herafi system'
-	)
+	@ApiHttpResponse(HttpStatus.OK, 'Logout person from Herafi system')
 	@ApiParam({
-		example: 1,
-		description: 'person id in db',
+		name: 'personId',
+		description: 'Person id in db',
 		required: true,
-		type: Number,
-		name: 'personId'
+		type: Number
 	})
 	public logout(
 		@Param('id', ParseIntPipe) personId: number

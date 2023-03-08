@@ -10,15 +10,14 @@ import { ResultMessages } from 'src/helpers/constants/result-messages.constants'
 export class MailQueueProducer {
 	constructor(@InjectQueue(QueuesNames.MailSend) private mailQueue: Queue) {}
 
-	public async sendMailConfirmation(mailBody: MailBody): Promise<boolean> {
+	public async sendMailConfirmation(mailBody: MailBody) {
 		try {
-			this.mailQueue.add(ProcessNames.Confirmation, mailBody, {
+			this.mailQueue.add(ProcessNames.SendEmailConfirmation, mailBody, {
 				attempts: 10
 			});
-			return true;
+			console.log(ResultMessages.EmailSendingOperation());
 		} catch (err) {
 			console.log(ResultMessages.QueueAddingJobFailed(`${err}`));
-			return false;
 		}
 	}
 }

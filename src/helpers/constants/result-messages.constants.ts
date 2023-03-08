@@ -50,6 +50,10 @@ export class ResultMessages {
 		return 'password is incorrect';
 	}
 
+	public static EmailSendingOperation() {
+		return `Email sending operation is working now`;
+	}
+
 	public static EmailSendingFailed(additionalInfo: string) {
 		return `Error in sending email to user > Additional info: ${additionalInfo}`;
 	}

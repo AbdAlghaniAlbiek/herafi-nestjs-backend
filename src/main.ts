@@ -17,7 +17,6 @@ import { SwaggerDocuments } from './helpers/documents/swagger.document';
 import { NodeConfig } from './configurations/config.interfaces';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { Environment } from './helpers/constants/environments.constants';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -34,7 +33,7 @@ async function bootstrap() {
 			// transform: true,  The best way is to use the common pipes like: parseIntPipe, parseBooleanPipe
 			whitelist: true,
 			forbidNonWhitelisted: true,
-			stopAtFirstError: true,
+			stopAtFirstError: false,
 			validateCustomDecorators: true,
 			exceptionFactory: (validationErrors: ValidationError[] = []) => {
 				return new BadRequestException(`${validationErrors}`);
