@@ -1,5 +1,5 @@
 export enum MailEvents {
-	MailAlmostSendingEvent = 'mail.almost.sending',
+	MailBeforeSendingEvent = 'mail.before.sending',
 	MailSendingEvent = 'mail.sending',
 	MailSendedEvent = 'mail.sended',
 	MailFailedSendingEvent = 'mail.failed.sending'

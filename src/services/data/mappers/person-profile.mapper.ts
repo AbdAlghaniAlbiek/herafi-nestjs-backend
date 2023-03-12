@@ -4,25 +4,25 @@ import { Injectable } from '@nestjs/common';
 import { Person } from 'src/data/entities/person.entity';
 import {
 	CreatePersonDto,
-	ReadPersonDto,
 	UpdatePersonDto
-} from 'src/data/dtos/person.dto';
+} from 'src/data/dtos/common-dtos/requests/auth-request.dto';
+import { ReadPersonDto } from 'src/data/dtos/common-dtos/responses/auth-response.dto';
 
 @Injectable()
-export class personProfile extends AutomapperProfile {
+export class PersonProfile extends AutomapperProfile {
 	constructor(@InjectMapper() mapper: Mapper) {
 		super(mapper);
 	}
 
 	override get profile() {
 		return (mapper) => {
-			this.createPersonMap(mapper);
-			this.updatePersonMap(mapper);
-			this.readPersonMap(mapper);
+			this.createPersonDtoMap(mapper);
+			this.updatePersonDtoMap(mapper);
+			this.readPersonDtoMap(mapper);
 		};
 	}
 
-	private createPersonMap(mapper: any) {
+	private createPersonDtoMap(mapper: any) {
 		createMap(mapper, Person, CreatePersonDto);
 		createMap(
 			mapper,
@@ -33,7 +33,7 @@ export class personProfile extends AutomapperProfile {
 		createMap(mapper, CreatePersonDto, Person);
 	}
 
-	private updatePersonMap(mapper: any) {
+	private updatePersonDtoMap(mapper: any) {
 		createMap(mapper, Person, UpdatePersonDto);
 		createMap(
 			mapper,
@@ -44,7 +44,7 @@ export class personProfile extends AutomapperProfile {
 		createMap(mapper, UpdatePersonDto, Person);
 	}
 
-	private readPersonMap(mapper: any) {
+	private readPersonDtoMap(mapper: any) {
 		createMap(mapper, Person, ReadPersonDto);
 		createMap(
 			mapper,

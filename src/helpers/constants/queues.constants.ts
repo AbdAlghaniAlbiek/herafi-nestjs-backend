@@ -1,3 +1,3 @@
 export enum QueuesNames {
-	MailSend = 'MailSend'
+	MailQueue = 'MailQueue'
 }

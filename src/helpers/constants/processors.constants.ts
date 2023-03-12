@@ -1,3 +1,3 @@
 export enum ProcessNames {
-	SendEmailConfirmation = 'Confirmation'
+	SendEmailVerification = 'SendEmailVerification'
 }

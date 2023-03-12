@@ -11,9 +11,10 @@ import { MailBody } from 'src/data/types/mail.type';
 import { MailEvents } from 'src/helpers/constants/events.constants';
 import { ProcessNames } from 'src/helpers/constants/processors.constants';
 import { QueuesNames } from 'src/helpers/constants/queues.constants';
+import { ProcessorsResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { MailService } from '../../mail.service';
 
-@Processor(QueuesNames.MailSend)
+@Processor(QueuesNames.MailQueue)
 export class MailQueueConsumer {
 	constructor(
 		private readonly mailService: MailService,
@@ -23,10 +24,8 @@ export class MailQueueConsumer {
 	@OnQueueActive()
 	onActive(job: Job) {
 		this.mailEvents.emit(
-			MailEvents.MailAlmostSendingEvent,
-			`Processor:@OnQueueActive - Processing job ${job.id} of type ${
-				job.name
-			}. Data: ${JSON.stringify(job.data)}`
+			MailEvents.MailBeforeSendingEvent,
+			ProcessorsResultMessages.jobRunning(job.id, job.name, job.data)
 		);
 	}
 
@@ -34,30 +33,20 @@ export class MailQueueConsumer {
 	onComplete(job: Job) {
 		this.mailEvents.emit(
 			MailEvents.MailSendingEvent,
-			`Processor:@OnQueueCompleted - Completed job ${job.id} of type ${job.name}.`
+			ProcessorsResultMessages.jobCompleted(job.id, job.name)
 		);
 	}
 
 	@OnQueueFailed()
 	onError(job: Job<any>, error) {
-		console.log(
-			`Processor:@OnQueueFailed - Failed job ${job.id} of type ${job.name}: ${error.message}`,
-			error.stack
+		this.mailEvents.emit(
+			MailEvents.MailFailedSendingEvent,
+			ProcessorsResultMessages.jobFailed(job.id, job.name, error)
 		);
 	}
 
-	@Process(ProcessNames.SendEmailConfirmation)
-	async sendEmail(job: Job): Promise<any> {
-		this.mailEvents.emit(
-			MailEvents.MailSendedEvent,
-			'Processor:@Process - Sending confirmation email.'
-		);
-
-		try {
-			const result = await this.mailService.sendMail(<MailBody>job.data);
-			return result;
-		} catch (error) {
-			console.log('Failed to send confirmation email.', error.stack);
-		}
+	@Process(ProcessNames.SendEmailVerification)
+	sendEmail(job: Job) {
+		this.mailService.sendMail(<MailBody>job.data);
 	}
 }

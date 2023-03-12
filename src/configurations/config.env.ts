@@ -3,27 +3,27 @@ import { resolve } from 'path';
 
 envFilePath(resolve(process.cwd(), '.env'));
 
-function nodeConfig() {
+export function nodeConfig() {
 	return {
 		NODE_ENV: process.env.NODE_ENV,
 		PORT: parseInt(<string>process.env.PORT, 10)
 	};
 }
 
-function aesConfig() {
+export function aesConfig() {
 	return {
 		KEY: process.env.AES_KEY?.toString(),
 		IV: process.env.AES_IV?.toString()
 	};
 }
 
-function hashConfig() {
+export function hashConfig() {
 	return {
 		SALT: parseInt(<string>process.env.HASH_SALT, 10)
 	};
 }
 
-function jwtConfig() {
+export function jwtConfig() {
 	return {
 		ALGORITHM: process.env.JWT_ALGORITHM,
 		ACCESS_TOKEN_EXPIRES_IN: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
@@ -38,7 +38,7 @@ function jwtConfig() {
 	};
 }
 
-function pgConfig() {
+export function pgConfig() {
 	return {
 		PG_HOST: process.env.PG_HOST,
 		PG_USER: process.env.PG_USER,
@@ -49,30 +49,28 @@ function pgConfig() {
 	};
 }
 
-function mailConfig() {
+export function mailConfig() {
 	return {
 		HOST: process.env.MAIL_HOST,
 		PORT: process.env.MAIL_PORT,
 		DEFAULT_FROM_USER: process.env.MAIL_DEFAULT_FROM_USER,
 		IS_SECURE: Boolean(process.env.MAIL_IS_SECURE),
 		AUTH_USER: process.env.MAIL_AUTH_USER,
-		AUTH_PASSWORD: process.env.MAIL_AUTH_PASSWORD
+		AUTH_PASSWORD: process.env.MAIL_AUTH_PASSWORD.toString()
 	};
 }
 
-function redisConfig() {
+export function redisConfig() {
 	return {
 		HOST: process.env.REDIS_HOST,
 		PORT: process.env.REDIS_PORT
 	};
 }
 
-export {
-	nodeConfig,
-	aesConfig,
-	hashConfig,
-	jwtConfig,
-	pgConfig,
-	mailConfig,
-	redisConfig
-};
+export function cloudinaryConfig() {
+	return {
+		CLOUD_NAME: process.env.CLOUD_NAME,
+		API_KEY: process.env.API_KEY,
+		API_SECRET: process.env.API_SECRET
+	};
+}

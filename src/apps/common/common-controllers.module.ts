@@ -1,54 +1,60 @@
-import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
 import { AuthController } from './controllers/auth.controller';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { ConfigService } from '@nestjs/config';
-import { MailConfig, RedisConfig } from 'src/configurations/config.interfaces';
-import { BullModule } from '@nestjs/bull';
-import { join } from 'path';
 import { MulterModule } from '@nestjs/platform-express';
-import { QueuesNames } from 'src/helpers/constants/queues.constants';
+import { UploadController } from './controllers/upload.controller';
+import { UploadRepo } from 'src/data/repositories/controllers-repos/common-repos/upload.repo';
+import { diskStorage } from 'multer';
+import {
+	fileMimetypeFilter,
+	fileNameModifier
+} from 'src/helpers/resolvers/upload-file.resolver';
+import { ConfigService } from '@nestjs/config';
+import {
+	CloudinaryConfig,
+	NodeConfig
+} from 'src/configurations/config.interfaces';
+import { Environment } from 'src/helpers/constants/environments.constants';
+import { resolve } from 'path';
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
+import { AcceptedImageMimeType } from 'src/helpers/constants/accepted-mime-type.constants';
+import { CloudinaryModule } from 'nestjs-cloudinary';
 
 @Module({
 	imports: [
-		MailerModule.forRootAsync({
-			useFactory: (mailConfig: ConfigService<MailConfig>) => ({
-				transport: {
-					host: mailConfig.get('HOST'),
-					port: mailConfig.get('PORT'),
-					secure: mailConfig.get('IS_SECURE'),
-					auth: {
-						user: mailConfig.get('AUTH_USER'),
-						pass: mailConfig.get('AUTH_PASSWORD')
+		MulterModule.registerAsync({
+			useFactory: (nodeConfig: ConfigService<NodeConfig>) =>
+				<MulterOptions>{
+					dest:
+						nodeConfig.get('NODE_ENV') === Environment.Development
+							? resolve(process.cwd(), 'src/assets/upload/images')
+							: '',
+					fileFilter: fileMimetypeFilter(
+						AcceptedImageMimeType.Jpeg,
+						AcceptedImageMimeType.Png
+					),
+					storage: diskStorage({
+						filename: fileNameModifier
+					}),
+					limits: {
+						fileSize: 1024 * 1024 * 2,
+						fields: 10
 					}
 				},
-				defaults: {
-					from: mailConfig.get('DEFAULT_FROM_USER')
-				},
-				template: {
-					dir: join(__dirname, '..', 'assets/templates'),
-					adapter: new HandlebarsAdapter(),
-					options: {
-						strict: true
-					}
-				}
-			}),
 			inject: [ConfigService]
 		}),
-		BullModule.registerQueueAsync({
-			name: QueuesNames.MailSend, // mail queue name
-			useFactory: (redisConfig: ConfigService<RedisConfig>) => ({
-				redis: {
-					host: redisConfig.get('HOST'),
-					port: redisConfig.get('PORT')
-				}
+		CloudinaryModule.forRootAsync({
+			useFactory: (
+				cloudinaryConfig: ConfigService<CloudinaryConfig>
+			) => ({
+				cloud_name: cloudinaryConfig.get('CLOUD_NAME'),
+				api_key: cloudinaryConfig.get('API_KEY'),
+				api_secret: cloudinaryConfig.get('API_SECRET')
 			}),
 			inject: [ConfigService]
-		}),
-		MulterModule.register({})
+		})
 	],
-	controllers: [AuthController],
-	providers: [AuthRepo]
+	controllers: [AuthController, UploadController],
+	providers: [AuthRepo, UploadRepo]
 })
 export class CommonControllersModule {}

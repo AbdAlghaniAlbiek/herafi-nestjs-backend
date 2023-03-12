@@ -1,20 +1,26 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AuthPerson } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
+import {
+	AuthPerson,
+	CreatePersonDto
+} from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { CreatePersonDto } from 'src/data/dtos/common-dtos/requests/person.dto';
 import { HashCryptography } from '../../../../services/security/cryptography/hash.crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from 'src/data/entities/person.entity';
 import { Repository } from 'typeorm';
 import { JwtConfig } from 'src/configurations/config.interfaces';
-import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
+import {
+	AuthResultMessages,
+	CrudResultMessages
+} from 'src/helpers/constants/result-messages.constants';
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CRUD } from 'src/helpers/constants/crud.contants';
 import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { MailQueueProducer } from 'src/services/enhancers/queues/producers/mail.producer';
+import { getRandomVerificationCode } from 'src/helpers/resolvers/generate-random-values.resolver';
 
 @Injectable()
 export class AuthRepo {
@@ -28,26 +34,30 @@ export class AuthRepo {
 		@InjectMapper() private readonly mapper: Mapper
 	) {}
 
-	async signUp(createPerson: CreatePersonDto): Promise<string> {
+	async signUp(createPersonDto: CreatePersonDto): Promise<string> {
 		try {
-			// Check if user exists
+			// Check if person exists
 			const userExists = await this.personRepo.findOneBy({
-				email: createPerson.email
+				email: createPersonDto.email
 			});
 
 			if (userExists) {
 				throw new BadRequestException(
-					ResultMessages.userIsAlreadyExist()
+					AuthResultMessages.personsAlreadyExist(
+						createPersonDto.email
+					)
 				);
 			}
 
 			// Make Hashed password for the person
-			createPerson.password = await this.hashData(createPerson.password);
-			createPerson.verifyCode = await this.getRandomVerificationCode();
+			createPersonDto.password = await this.hashData(
+				createPersonDto.password
+			);
+			createPersonDto.verifyCode = await getRandomVerificationCode();
 
 			// Mapping from createPerons dto to Person entity
 			const person = await this.mapper.mapAsync(
-				createPerson,
+				createPersonDto,
 				CreatePersonDto,
 				Person
 			);
@@ -70,17 +80,17 @@ export class AuthRepo {
 
 			await this.updateRefreshToken(newPerson.id, refreshToken);
 
-			await this.mailQueueProducer.sendMailConfirmation({
+			await this.mailQueueProducer.sendMailVerification({
 				to: newPerson.email,
-				subject: 'Confirmaion email form Herafi team',
-				text: `This email confirms that you are successfuly registered in Herafi system, last step is to copy this veriy code to ensure that your account is verified \n\n Verify code: ${person.verifyCode}`,
+				subject: 'Confirmaion email from Herafi team',
+				text: `We Herafi team sended this email for you to complete your verification process, last step is to copy this veriy code to ensure that your account is verified \n\n Verify code: ${person.verifyCode}`,
 				html: ''
 			});
 			return accessToken;
 		} catch (err) {
 			throw new InternalServerErrorException(
-				ResultMessages.failedCRUD(
-					`Person with email: ${createPerson.email}`,
+				CrudResultMessages.failedCRUD(
+					`Person with email: ${createPersonDto.email}`,
 					CRUD.create,
 					`${err}`
 				)
@@ -280,11 +290,5 @@ export class AuthRepo {
 		} catch (err) {
 			throw new InternalServerErrorException(`${err}`);
 		}
-	}
-
-	getRandomVerificationCode() {
-		const min = Math.ceil(100000);
-		const max = Math.floor(900000);
-		return Math.floor(Math.random() * (max - min) + min).toString(); // The maximum is exclusive and the minimum is inclusive
 	}
 }

@@ -20,16 +20,16 @@ export function ApiController(controllerName: ControllerOptions) {
 	);
 }
 
-export function ApiHttpResponse(
-	httpStatusCode: number,
-	description: string,
-	type: any | undefined = undefined
-) {
-	return applyDecorators(
-		HttpCode(httpStatusCode),
-		ApiResponse({ status: httpStatusCode, description, type })
-	);
-}
+// export function ApiHttpResponse(
+// 	httpStatusCode: number,
+// 	description: string,
+// 	type: any | undefined = undefined
+// ) {
+// 	return applyDecorators(
+// 		HttpCode(httpStatusCode),
+// 		ApiResponse({ status: httpStatusCode, description, type })
+// 	);
+// }
 
 export function AutoMappedApiProperty(
 	apiPropertyOptions: ApiPropertyOptions | undefined = undefined
