@@ -1,5 +1,12 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
-import { createMap, forMember, ignore, Mapper } from '@automapper/core';
+import {
+	createMap,
+	forMember,
+	fromValue,
+	ignore,
+	Mapper,
+	mapWith
+} from '@automapper/core';
 import { Injectable } from '@nestjs/common';
 import { Person } from 'src/data/entities/person.entity';
 import {
@@ -7,6 +14,7 @@ import {
 	UpdatePersonDto
 } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { ReadPersonDto } from 'src/data/dtos/common-dtos/responses/auth-response.dto';
+import { generateRandomVerificationCode } from 'src/helpers/resolvers/generate-random-values.resolver';
 
 @Injectable()
 export class PersonProfile extends AutomapperProfile {
@@ -23,14 +31,20 @@ export class PersonProfile extends AutomapperProfile {
 	}
 
 	private createPersonDtoMap(mapper: any) {
-		createMap(mapper, Person, CreatePersonDto);
 		createMap(
 			mapper,
 			CreatePersonDto,
 			Person,
-			forMember((dest) => dest.id, ignore())
+			forMember((dest) => dest.id, ignore()),
+			forMember(
+				(dest) => dest.socialProvider.verifyCode,
+				fromValue(generateRandomVerificationCode())
+			),
+			forMember(
+				(dest) => dest.role.personRole,
+				mapWith(Person, CreatePersonDto, (src) => src.personRole)
+			)
 		);
-		createMap(mapper, CreatePersonDto, Person);
 	}
 
 	private updatePersonDtoMap(mapper: any) {

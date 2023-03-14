@@ -1,6 +1,6 @@
 import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { AcceptedImageMimeType } from '../constants/accepted-mime-type.constants';
-import { getRandomExtendedImageNameValue } from './generate-random-values.resolver';
+import { generateRandomExtendedImageNameValue } from './generate-random-values.resolver';
 
 export function fileMimetypeFilter(...mimetypes: AcceptedImageMimeType[]) {
 	return (
@@ -32,7 +32,7 @@ export function fileNameModifier() {
 
 		callback(
 			null,
-			`${fileName}-${Date.now().toLocaleString()}-${getRandomExtendedImageNameValue()}.${fileExt}`
+			`${fileName}-${Date.now().toLocaleString()}-${generateRandomExtendedImageNameValue()}.${fileExt}`
 		);
 	};
 }

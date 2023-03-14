@@ -38,7 +38,7 @@ export class CrudResultMessages {
 
 export class AuthResultMessages {
 	public static personsAlreadyExist(email: string): string {
-		return `Person with email: ${email} is already exist`;
+		return `Person with email: ${email} is already exist, please register with another email`;
 	}
 
 	public static unauthorizedUser() {
@@ -118,5 +118,29 @@ export class ProcessorsResultMessages {
 		jobError: any
 	) {
 		return `Processor:@OnQueueFailed - Failed job ${jobId} of type ${jobName}: ${jobError}`;
+	}
+}
+
+export class HashCryptoResultMessage {
+	public static generateSaltError(errorDetails: any) {
+		return `Error caused when it generate salt for hashing | Details: ${errorDetails}`;
+	}
+
+	public static hashDataError(errorDetails: any) {
+		return `Error caused when make hashing for plain text | Details: ${errorDetails}`;
+	}
+
+	public static comparePlainCipherError(errorDetails: any) {
+		return `\nError caused when compare hash to palin text | Details: ${errorDetails}`;
+	}
+}
+
+export class AesCryptoResultMessage {
+	public static encryptionError(errorDetails: any) {
+		return `Error caused when make Encryption for plain text | Details: ${errorDetails}`;
+	}
+
+	public static decryptionError(errorDetails: any) {
+		return `Error caused when make Decryption for plain text | Details: ${errorDetails}`;
 	}
 }

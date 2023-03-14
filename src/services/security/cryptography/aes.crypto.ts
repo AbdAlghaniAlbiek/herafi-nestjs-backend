@@ -54,9 +54,7 @@ export class AESCryptography {
 				cipherText += cipher.final(this.encryptionEncoding);
 				resolve(cipherText);
 			} catch (err) {
-				reject(
-					`\nError caused when make Encryption for plain text | Details: ${err}`
-				);
+				reject(err);
 			}
 		});
 	}
@@ -77,9 +75,7 @@ export class AESCryptography {
 					decipher.final().toString();
 				resolve(plainText);
 			} catch (err) {
-				reject(
-					`\nError caused when make Decryption for plain text | Details: ${err}`
-				);
+				reject(err);
 			}
 		});
 	}

@@ -1,46 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { HttpExceptionFilter } from './helpers/security/errors/exception-filter';
-import {
-	BadRequestException,
-	ValidationError,
-	ValidationPipe,
-	VersioningType,
-	VERSION_NEUTRAL
-} from '@nestjs/common';
-import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
-import helmet from 'helmet';
-import * as csurf from 'csurf';
-import { SwaggerModule } from '@nestjs/swagger';
-import { SwaggerDocuments } from './helpers/documents/swagger.document';
+import { VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import { NodeConfig } from './configurations/config.interfaces';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { globalSetup as appGlobalSetup } from './setup/globals.setup';
+import { securitySetup as appSecuritySetup } from './setup/security.setup';
+import { appSwaggerSetup } from './setup/swagger.setup';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-		snapshot: true,
 		logger: console
 	});
 
 	// Global Enhancers
-	app.setGlobalPrefix('api');
-	app.useGlobalFilters(new HttpExceptionFilter());
-	app.useGlobalPipes(
-		new ValidationPipe({
-			// validateCustomDecorators: true,
-			// transform: true,  The best way is to use the common pipes like: parseIntPipe, parseBooleanPipe
-			whitelist: true,
-			forbidNonWhitelisted: true,
-			stopAtFirstError: false,
-			validateCustomDecorators: true,
-			exceptionFactory: (validationErrors: ValidationError[] = []) => {
-				return new BadRequestException(`${validationErrors}`);
-			}
-		})
-	);
-	app.useGlobalInterceptors(new TimeoutInterceptor());
+	appGlobalSetup(app);
 
 	// Versioning of application
 	app.enableVersioning({
@@ -50,38 +25,13 @@ async function bootstrap() {
 	});
 
 	// Security stuff
-	app.use(helmet());
-	app.use(csurf());
-	app.enableCors();
+	appSecuritySetup(app);
 
 	// Serve static assets
-	app.useStaticAssets(join(__dirname, 'public'));
+	app.useStaticAssets(join(__dirname, 'assets'));
 
 	// Swagger setup
-	SwaggerModule.setup(
-		'common',
-		app,
-		SwaggerDocuments.commonSwaggerDocument(app),
-		{ useGlobalPrefix: true }
-	);
-	SwaggerModule.setup(
-		'admin',
-		app,
-		SwaggerDocuments.adminSwaggerDocument(app),
-		{ useGlobalPrefix: true }
-	);
-	SwaggerModule.setup(
-		'user',
-		app,
-		SwaggerDocuments.userSwaggerDocument(app),
-		{ useGlobalPrefix: true }
-	);
-	SwaggerModule.setup(
-		'craftman',
-		app,
-		SwaggerDocuments.craftmanSwaggerDocument(app),
-		{ useGlobalPrefix: true }
-	);
+	appSwaggerSetup(app);
 
 	await app.listen(app.get(ConfigService<NodeConfig>).get('PORT'));
 

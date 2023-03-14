@@ -1,15 +1,5 @@
-import {
-	applyDecorators,
-	Controller,
-	HttpCode,
-	ControllerOptions
-} from '@nestjs/common';
-import {
-	ApiProperty,
-	ApiPropertyOptions,
-	ApiResponse,
-	ApiTags
-} from '@nestjs/swagger';
+import { applyDecorators, Controller, ControllerOptions } from '@nestjs/common';
+import { ApiProperty, ApiPropertyOptions, ApiTags } from '@nestjs/swagger';
 import { AutoMap } from '@automapper/classes';
 import { Allow } from 'class-validator';
 
@@ -31,14 +21,12 @@ export function ApiController(controllerName: ControllerOptions) {
 // 	);
 // }
 
-export function AutoMappedApiProperty(
-	apiPropertyOptions: ApiPropertyOptions | undefined = undefined
-) {
+export function AutoMappedApiProperty(apiPropertyOptions?: ApiPropertyOptions) {
 	return applyDecorators(AutoMap, ApiProperty(apiPropertyOptions));
 }
 
 export function AutoMappedAllowedApiProperty(
-	apiPropertyOptions: ApiPropertyOptions | undefined = undefined
+	apiPropertyOptions?: ApiPropertyOptions
 ) {
 	return applyDecorators(AutoMap, Allow, ApiProperty(apiPropertyOptions));
 }

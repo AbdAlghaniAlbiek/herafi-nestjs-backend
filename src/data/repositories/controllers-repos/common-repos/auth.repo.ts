@@ -20,12 +20,16 @@ import { CRUD } from 'src/helpers/constants/crud.contants';
 import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { MailQueueProducer } from 'src/services/enhancers/queues/producers/mail.producer';
-import { getRandomVerificationCode } from 'src/helpers/resolvers/generate-random-values.resolver';
+import { CryptographyException } from 'src/helpers/security/errors/custom-exceptions';
+import { exceptionHandler } from 'src/helpers/security/errors/exception-handler';
+import { SocialProvider } from 'src/data/entities/social-provider.entity';
 
 @Injectable()
 export class AuthRepo {
 	constructor(
 		@InjectRepository(Person) private personRepo: Repository<Person>,
+		@InjectRepository(SocialProvider)
+		private socialProviderRepo: Repository<SocialProvider>,
 		private jwtService: JwtService,
 		private hashService: HashCryptography,
 		private aesService: AESCryptography,
@@ -53,7 +57,11 @@ export class AuthRepo {
 			createPersonDto.password = await this.hashData(
 				createPersonDto.password
 			);
-			createPersonDto.verifyCode = await getRandomVerificationCode();
+
+			/* 
+				Important Note:
+				Generating verify code will be in CreatePersonDtoMapper in person profile (mapper folder)
+			*/
 
 			// Mapping from createPerons dto to Person entity
 			const person = await this.mapper.mapAsync(
@@ -83,16 +91,16 @@ export class AuthRepo {
 			await this.mailQueueProducer.sendMailVerification({
 				to: newPerson.email,
 				subject: 'Confirmaion email from Herafi team',
-				text: `We Herafi team sended this email for you to complete your verification process, last step is to copy this veriy code to ensure that your account is verified \n\n Verify code: ${person.verifyCode}`,
-				html: ''
+				text: `We Herafi team sended this email to you for completion your verification process, last step is to copy this veriy code to ensure that your account is verified \n\nVerify code: ${person.socialProvider.verifyCode}`
 			});
 			return accessToken;
 		} catch (err) {
-			throw new InternalServerErrorException(
+			exceptionHandler(
+				err,
 				CrudResultMessages.failedCRUD(
-					`Person with email: ${createPersonDto.email}`,
+					`Person with email ${createPersonDto.email}`,
 					CRUD.create,
-					`${err}`
+					err.message
 				)
 			);
 		}
@@ -100,30 +108,31 @@ export class AuthRepo {
 
 	async verifAccount(personId: number, verifyCode: string) {
 		try {
-			const person = this.personRepo.findOneBy({
-				id: personId,
+			const socialProviderPerson = this.socialProviderRepo.findOneBy({
+				personId,
 				verifyCode
 			});
-			if (!person)
+			if (!socialProviderPerson)
 				throw new BadRequestException(
-					ResultMessages.itemNotFound(
-						`Person with id: ${personId}`,
-						''
+					CrudResultMessages.itemNotFound(
+						`Person with id: ${personId}`
 					)
 				);
 
-			await this.personRepo.update(
-				{ id: personId },
+			await this.socialProviderRepo.update(
+				{ personId },
 				{ verifyCode: null }
 			);
-			return ResultMessages.successCRUD(
+
+			return CrudResultMessages.successCRUD(
 				`Person with id: ${personId}`,
 				CRUD.Update,
 				''
 			);
 		} catch (err) {
-			throw new InternalServerErrorException(
-				ResultMessages.failedCRUD(
+			exceptionHandler(
+				err,
+				CrudResultMessages.failedCRUD(
 					`Person with id: ${personId}`,
 					CRUD.Update,
 					`${err}`
@@ -132,25 +141,27 @@ export class AuthRepo {
 		}
 	}
 
-	async signIn(data: AuthPerson): Promise<string> {
+	async signIn(authPerson: AuthPerson): Promise<string> {
 		try {
 			// Check if person exists
 			const person = await this.personRepo.findOneBy({
-				email: data.email
+				email: authPerson.email
 			});
 			if (!person)
 				throw new BadRequestException(
-					ResultMessages.itemNotFound('Person', '')
+					CrudResultMessages.itemNotFound(
+						`Person with email: ${authPerson.email}`
+					)
 				);
 
 			/* Compare if the sended password from person is actually equally to his registered hashed password in db */
 			const passwordMatches = this.verifyPlainAndHashedData(
-				data.password,
+				authPerson.password,
 				person.password
 			);
 			if (!passwordMatches)
 				throw new BadRequestException(
-					ResultMessages.passwordIsIncorrect()
+					AuthResultMessages.emailOrPasswordIsIncorrect()
 				);
 
 			// generate specific tokens for this person
@@ -167,9 +178,10 @@ export class AuthRepo {
 			await this.updateRefreshToken(person.id, refreshToken);
 			return accessToken;
 		} catch (err) {
-			throw new InternalServerErrorException(
-				ResultMessages.failedCRUD(
-					`Person with email: `,
+			exceptionHandler(
+				err,
+				CrudResultMessages.failedCRUD(
+					`Person with email: ${authPerson.email}`,
 					CRUD.Update,
 					`${err}`
 				)
@@ -180,16 +192,30 @@ export class AuthRepo {
 	// Note: when you use Mongo db you must convert "personId" type to "string"
 	async logout(personId: number): Promise<string> {
 		try {
-			await this.personRepo.update(personId, { refreshToken: null });
+			const person = this.personRepo.findOneBy({ id: personId });
+			if (!person) {
+				throw new BadRequestException(
+					CrudResultMessages.itemNotFound(
+						`Person with id: ${personId}`
+					)
+				);
+			}
+			await this.socialProviderRepo.update(
+				{ personId },
+				{
+					refreshToken: null
+				}
+			);
 
-			return ResultMessages.successCRUD(
+			return CrudResultMessages.successCRUD(
 				`Person with: ${personId}`,
 				CRUD.Update,
 				''
 			);
 		} catch (err) {
-			throw new InternalServerErrorException(
-				ResultMessages.failedCRUD(
+			exceptionHandler(
+				err,
+				CrudResultMessages.failedCRUD(
 					`Person with id: ${personId}`,
 					CRUD.Update,
 					`${err}`
@@ -202,7 +228,7 @@ export class AuthRepo {
 		try {
 			return this.hashService.hashingPlainText(data);
 		} catch (err) {
-			throw new InternalServerErrorException(`${err}`);
+			throw new CryptographyException(err.name, err.message, err.stack);
 		}
 	}
 
@@ -228,9 +254,12 @@ export class AuthRepo {
 			const encryptedRefreshToken = await this.aesService.encryption(
 				refreshToken
 			);
-			await this.personRepo.update(personId, {
-				refreshToken: encryptedRefreshToken
-			});
+			await this.socialProviderRepo.update(
+				{ personId },
+				{
+					refreshToken: encryptedRefreshToken
+				}
+			);
 
 			return true;
 		} catch (err) {

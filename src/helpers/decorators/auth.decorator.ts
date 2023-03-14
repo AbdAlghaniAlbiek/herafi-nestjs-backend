@@ -5,14 +5,14 @@ import { RefreshTokenAuthGuard } from 'src/services/security/guards/refresh-toke
 import { RolesGuard } from 'src/services/security/guards/roles.guard';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import { Roles } from '../security/meta-data/roles.meta-data';
-import { ResultMessages } from '../constants/result-messages.constants';
+import { AuthResultMessages } from '../constants/result-messages.constants';
 
 export function Authenticated() {
 	return applyDecorators(
 		UseGuards(AccessTokenAuthGuard, RefreshTokenAuthGuard),
 		ApiBearerAuth(),
 		ApiUnauthorizedResponse({
-			description: ResultMessages.unauthorizedUser()
+			description: AuthResultMessages.unauthorizedUser()
 		})
 	);
 }
@@ -23,7 +23,7 @@ export function Authorized(...roles: UserRole[]) {
 		UseGuards(AccessTokenAuthGuard, RefreshTokenAuthGuard, RolesGuard),
 		ApiBearerAuth(),
 		ApiUnauthorizedResponse({
-			description: ResultMessages.forbiddenAccessOnThisResource()
+			description: AuthResultMessages.forbiddenAccessOnThisResource()
 		})
 	);
 }

@@ -4,16 +4,14 @@ import {
 	IsEmail,
 	IsStrongPassword,
 	IsPhoneNumber,
-	IsInt,
-	Min,
-	Max,
 	IsNotEmpty,
 	IsOptional,
 	IsString,
-	IsNumber,
 	MinLength,
-	MaxLength
+	MaxLength,
+	IsEnum
 } from 'class-validator';
+import { PersonRole } from 'src/data/entities/constants/person-role.constants';
 import { AutoMappedApiProperty } from 'src/helpers/decorators/swagger.decorator';
 
 export class AuthPerson {
@@ -37,8 +35,20 @@ export class AuthPerson {
 export class CreatePersonDto {
 	@IsNotEmpty()
 	@IsEmail({ domain_specific_validation: true })
-	@AutoMappedApiProperty({})
+	@AutoMappedApiProperty()
 	public email: string;
+
+	@Exclude()
+	@IsNotEmpty()
+	@IsStrongPassword({
+		minLength: 12,
+		minUppercase: 3,
+		minLowercase: 3,
+		minNumbers: 3,
+		minSymbols: 3
+	})
+	@AutoMappedApiProperty()
+	public password: string;
 
 	@IsString()
 	@IsNotEmpty()
@@ -54,59 +64,10 @@ export class CreatePersonDto {
 	@AutoMappedApiProperty()
 	public lastName: string;
 
-	@Exclude()
-	@IsNotEmpty()
-	@IsStrongPassword({
-		minLength: 12,
-		minUppercase: 3,
-		minLowercase: 3,
-		minNumbers: 3,
-		minSymbols: 3
-	})
-	@AutoMappedApiProperty()
-	public password: string;
-
 	@IsNotEmpty()
 	@IsPhoneNumber('SY')
 	@AutoMappedApiProperty()
 	public phoneNumber: string;
-
-	@Min(1)
-	@Max(10)
-	@IsInt()
-	@IsNotEmpty()
-	@AutoMappedApiProperty()
-	public sizeQueue: number;
-
-	@IsOptional()
-	@IsString()
-	@AutoMappedApiProperty()
-	public facebookId: string;
-
-	@IsOptional()
-	@IsString()
-	@AutoMappedApiProperty()
-	public microsoftId: string;
-
-	@IsOptional()
-	@IsString()
-	@AutoMappedApiProperty()
-	public googleId: string;
-
-	@IsOptional()
-	@IsString()
-	@AutoMappedApiProperty()
-	public fingerprintId: string;
-
-	@IsOptional()
-	@IsNumber()
-	@AutoMappedApiProperty()
-	public secureId: number;
-
-	@IsOptional()
-	@IsNumber()
-	@AutoMappedApiProperty()
-	public verifyCode: string;
 
 	@IsNotEmpty()
 	@IsString()
@@ -114,16 +75,13 @@ export class CreatePersonDto {
 	public identityNumber: string;
 
 	@IsOptional()
-	@IsNumber()
-	@Min(5000)
+	@IsString()
 	@AutoMappedApiProperty()
-	public lowestCost: number;
+	public fingerprintId: string;
 
-	@IsOptional()
-	@IsNumber()
-	@Max(25000)
+	@IsEnum(PersonRole)
 	@AutoMappedApiProperty()
-	public highestCost: number;
+	public personRole: PersonRole;
 }
 
 export class UpdatePersonDto extends PartialType(CreatePersonDto) {}

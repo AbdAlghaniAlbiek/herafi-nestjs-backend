@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
-	APP_FILTER,
 	APP_GUARD,
 	APP_INTERCEPTOR,
 	APP_PIPE,
@@ -31,7 +30,6 @@ import {
 	PostgresConfig,
 	RedisConfig
 } from './configurations/config.interfaces';
-import { HttpExceptionFilter } from './helpers/security/errors/exception-filter';
 import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
 import { CoreServicesModule } from './services/core-services.module';
 import { NodeSetupConfig } from './services/config/node-setup.config';
@@ -46,6 +44,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RedisClientOptions } from 'redis';
 import * as redisStore from 'cache-manager-redis-store';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 
 @Module({
 	imports: [
@@ -80,7 +79,16 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 			limit: 10
 		}),
 		AutomapperModule.forRoot({
-			strategyInitializer: classes()
+			strategyInitializer: classes(),
+			errorHandler: {
+				handle: (error) => {
+					throw new MappingExcetion(
+						(<Error>error).name,
+						(<Error>error).message,
+						(<Error>error).stack
+					);
+				}
+			}
 		}),
 		BullModule.forRootAsync({
 			useFactory: (redisConfig: ConfigService<RedisConfig>) => ({
@@ -104,6 +112,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 		}),
 		RouterModule.register([
 			{
+				path: 'common',
+				module: CommonControllersModule
+			},
+			{
 				path: 'admin',
 				module: AdminDesktopModule
 			},
@@ -117,14 +129,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 			}
 		]),
 		EventEmitterModule.forRoot({ global: true }),
-		CoreServicesModule,
-		CommonControllersModule
+		CoreServicesModule
 	],
 	providers: [
-		{
-			provide: APP_FILTER,
-			useClass: HttpExceptionFilter
-		},
 		{
 			provide: APP_PIPE,
 			useClass: ValidationPipe

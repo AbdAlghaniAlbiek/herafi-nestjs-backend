@@ -2,7 +2,14 @@ import {
 	AutoMappedColumn,
 	AutoMappedPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
-import { Entity, JoinColumn, ManyToOne, OneToMany, Point } from 'typeorm';
+import {
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	OneToMany,
+	OneToOne,
+	Point
+} from 'typeorm';
 import { Favourite } from './favourite.entity';
 import { History } from './history.entity';
 import { Level } from './level.entity';
@@ -11,6 +18,7 @@ import { Position } from './position.entity';
 import { Report } from './report.entity';
 import { Request } from './request.entity';
 import { Role } from './role.entity';
+import { SocialProvider } from './social-provider.entity';
 
 @Entity()
 export class Person {
@@ -47,22 +55,10 @@ export class Person {
 	public roleId: number;
 
 	@AutoMappedColumn()
-	public facebookId: string;
-
-	@AutoMappedColumn()
-	public microsoftId: string;
-
-	@AutoMappedColumn()
-	public googleId: string;
-
-	@AutoMappedColumn()
 	public fingerprintId: string;
 
 	@AutoMappedColumn()
-	public secureId: number;
-
-	@AutoMappedColumn()
-	public verifyCode: string;
+	public secureId: string;
 
 	@AutoMappedColumn()
 	public identityNumber: string;
@@ -81,9 +77,6 @@ export class Person {
 
 	@AutoMappedColumn()
 	public blockFinishDate: Date;
-
-	@AutoMappedColumn()
-	public refreshToken: string;
 
 	@AutoMappedColumn()
 	public levelId: number;
@@ -158,4 +151,12 @@ export class Person {
 		referencedColumnName: 'id'
 	})
 	public position: Position;
+
+	@OneToOne(() => SocialProvider, (socialProvider) => socialProvider.person, {
+		eager: true,
+		cascade: true,
+		nullable: false,
+		onDelete: 'CASCADE'
+	})
+	public socialProvider: SocialProvider;
 }
