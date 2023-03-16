@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import {
 	Entity,
@@ -22,66 +22,66 @@ import { SocialProvider } from './social-provider.entity';
 
 @Entity()
 export class Person {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public firstName: string;
 
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public lastName: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public email: string;
 
-	@AutoMappedColumn({ select: false })
+	@AutoMapColumn({ select: false })
 	public password: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public phoneNumber: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public dateJoin: Date;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public sizeQueue: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		type: 'geometry'
 	})
 	public location: Point;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public roleId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public fingerprintId: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public secureId: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public identityNumber: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public lowestCost: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public highestCost: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public blockNumber: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public blockStartDate: Date;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public blockFinishDate: Date;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public levelId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public positionId: number;
 
 	@OneToMany(() => Favourite, (favourite) => favourite.person, {

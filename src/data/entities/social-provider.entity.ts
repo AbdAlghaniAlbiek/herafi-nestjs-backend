@@ -1,29 +1,32 @@
-import { AutoMappedColumn } from 'src/helpers/decorators/orm.decorator';
-import { Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
+} from 'src/helpers/decorators/orm.decorator';
+import { Entity, JoinColumn, OneToOne } from 'typeorm';
 import { SocialProviderType } from './constants/social-provider.constants';
 import { Person } from './person.entity';
 
 @Entity()
 export class SocialProvider {
-	@PrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		enum: SocialProviderType,
 		enumName: 'social_provider_type'
 	})
 	public providerType: SocialProviderType;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public socialProviderId: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public refreshToken: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public verifyCode: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public personId: number;
 
 	@OneToOne(() => Person, (person) => person.socialProvider)

@@ -1,19 +1,19 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Category } from './category.entity';
 
 @Entity()
 export class Craft {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public name: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public categoryId: number;
 
 	@ManyToOne(() => Category, (category) => category.crafts)

@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm';
 import { Person } from './person.entity';
@@ -11,43 +11,43 @@ import { Status } from './status.entity';
 
 @Entity()
 export class Request {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public name: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public comment: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public personId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public personDealedWithId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public statusId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public processId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public userCode: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public craftmanCode: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public totalCost: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public startDate: Date;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public endDate: Date;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public totalRate: number;
 
 	@OneToMany(() => Photo, (photo) => photo.request, {

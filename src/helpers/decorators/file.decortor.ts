@@ -46,71 +46,40 @@ export function ApiFileFields(
 
 export function ApiFiles(
 	fieldName: string = 'files',
-	required: boolean = false,
 	maxCount: number = 10,
 	localOptions?: MulterOptions
 ) {
 	return applyDecorators(
 		UseInterceptors(FilesInterceptor(fieldName, maxCount, localOptions)),
-		ApiConsumes('multipart/form-data'),
-		ApiBody({
-			schema: {
-				type: 'object',
-				required: required ? [fieldName] : [],
-				properties: {
-					[fieldName]: {
-						type: 'array',
-						items: {
-							type: 'string',
-							format: 'binary'
-						}
-					}
-				}
-			}
-		})
+		ApiConsumes('multipart/form-data')
 	);
 }
 
 export function ApiFile(
 	fieldName: string = 'file',
-	required: boolean = false,
 	localOptions?: MulterOptions
 ) {
 	return applyDecorators(
 		UseInterceptors(FileInterceptor(fieldName, localOptions)),
-		ApiConsumes('multipart/form-data'),
-		ApiBody({
-			schema: {
-				type: 'object',
-				required: required ? [fieldName] : [],
-				properties: {
-					[fieldName]: {
-						type: 'string',
-						format: 'binary'
-					}
-				}
-			}
-		})
+		ApiConsumes('multipart/form-data')
 	);
 }
 
 export function ApiImageFile(
-	fileName: string = 'image',
-	required: boolean = false,
+	fileName: string = 'file',
 	mimeTypes: AcceptedImageMimeType[]
 ) {
-	return ApiFile(fileName, required, {
+	return ApiFile(fileName, {
 		fileFilter: fileMimetypeFilter(...mimeTypes)
 	});
 }
 
 export function ApiImageFiles(
-	fileName: string = 'image',
-	required: boolean = false,
+	fileName: string = 'file',
 	maxCount: number = 10,
 	mimeTypes: AcceptedImageMimeType[]
 ) {
-	return ApiFiles(fileName, required, maxCount, {
+	return ApiFiles(fileName, maxCount, {
 		fileFilter: fileMimetypeFilter(...mimeTypes)
 	});
 }

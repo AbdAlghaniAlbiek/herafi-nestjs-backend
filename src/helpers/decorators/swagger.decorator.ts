@@ -21,7 +21,7 @@ export function ApiController(controllerName: ControllerOptions) {
 // 	);
 // }
 
-export function AutoMappedApiProperty(apiPropertyOptions?: ApiPropertyOptions) {
+export function AutoMapApiProperty(apiPropertyOptions?: ApiPropertyOptions) {
 	return applyDecorators(AutoMap, ApiProperty(apiPropertyOptions));
 }
 

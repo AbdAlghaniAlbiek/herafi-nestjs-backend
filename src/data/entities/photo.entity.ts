@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { ImageType } from './constants/image-type.constants';
@@ -9,27 +9,27 @@ import { Request } from './request.entity';
 
 @Entity()
 export class Photo {
-	@AutoMappedPrimaryGeneratedColumn()
-	public id: number;
+	@AutoMapPrimaryGeneratedColumn()
+	public id?: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public imagePath: string;
 
-	@AutoMappedColumn()
-	public personId: number;
+	@AutoMapColumn()
+	public personId?: number;
 
-	@AutoMappedColumn()
-	public requestId: number;
+	@AutoMapColumn()
+	public requestId?: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		enum: ImageType,
 		enumName: 'image_type',
 		default: ImageType.Personal
 	})
-	public imageType: ImageType;
+	public imageType?: ImageType;
 
-	@AutoMappedColumn()
-	public banner: boolean;
+	@AutoMapColumn()
+	public banner?: boolean;
 
 	@ManyToOne(() => Request, (request) => request.photos, {
 		nullable: true
@@ -38,12 +38,12 @@ export class Photo {
 		name: 'request_id',
 		referencedColumnName: 'id'
 	})
-	public request: Request;
+	public request?: Request;
 
 	@ManyToOne(() => Person, (person) => person.photos)
 	@JoinColumn({
 		name: 'person_id',
 		referencedColumnName: 'id'
 	})
-	public person: Person;
+	public person?: Person;
 }

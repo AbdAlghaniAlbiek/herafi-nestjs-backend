@@ -1,5 +1,3 @@
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import {
 	BadRequestException,
@@ -9,58 +7,134 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CloudinaryService } from 'nestjs-cloudinary/dist/cloudinary.service';
 import { NodeConfig } from 'src/configurations/config.interfaces';
-import { PhotoPersonDto } from 'src/data/dtos/common-dtos/requests/upload-request.dto';
 import { Person } from 'src/data/entities/person.entity';
-import { Photo } from 'src/data/entities/photo.entity';
 import { CRUD } from 'src/helpers/constants/crud.contants';
 import { Environment } from 'src/helpers/constants/environments.constants';
-import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
-import { Repository } from 'typeorm';
-import { UploadApiErrorResponse } from 'cloudinary';
+import { CrudResultMessages } from 'src/helpers/constants/result-messages.constants';
+import { Repository, TypeORMError } from 'typeorm';
+import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
+import { ImageType } from 'src/data/entities/constants/image-type.constants';
+import { TypeOrmException } from 'src/helpers/security/errors/custom-exceptions';
+import { Photo } from 'src/data/entities/photo.entity';
+import { Request } from 'src/data/entities/request.entity';
 
 @Injectable()
 export class UploadRepo {
 	constructor(
 		@InjectRepository(Person) private personRepo: Repository<Person>,
-		@InjectMapper() private mapper: Mapper,
+		@InjectRepository(Request) private requestRepo: Repository<Request>,
 		private nodeConfig: ConfigService<NodeConfig>,
 		private readonly cloudinaryService: CloudinaryService
 	) {}
 
 	public async uploadSingleFile(
 		file: Express.Multer.File,
-		photoPersonDto: PhotoPersonDto
+		personId: number,
+		imageType: ImageType
 	) {
-		if (this.nodeConfig.get('NODE_ENV') === Environment.Production) {
-			try {
-				const uploadedImage = await this.cloudinaryService.uploadFile(
-					file
-				);
-				const person = await this.personRepo.findOneBy({
-					id: photoPersonDto.personId
-				});
-				if (!person) {
-					throw new BadRequestException(
-						ResultMessages.itemNotFound('Person', '')
-					);
-				}
-				const photo = await this.mapper.mapAsync(
-					photoPersonDto,
-					PhotoPersonDto,
-					Photo
-				);
-				photo.imagePath = uploadedImage.public_id;
-				person.photos = [photo];
-				this.personRepo.update({ id: person.id }, person);
+		try {
+			const uploadedImage =
+				this.nodeConfig.get('NODE_ENV') === Environment.Production
+					? await this.cloudinaryService.uploadFile(file)
+					: file;
 
-				return ResultMessages.successCRUD('Photo', CRUD.create, '');
-			} catch (error) {
-				if (error instanceof UploadApiErrorResponse) {
-					throw new InternalServerErrorException(`${error}`);
-				}
+			const person = await this.personRepo.findOneBy({
+				id: personId
+			});
+			if (!person) {
+				throw new BadRequestException(
+					CrudResultMessages.itemNotFound('Person', '')
+				);
 			}
+
+			person.photos.push({
+				imagePath:
+					this.nodeConfig.get('NODE_ENV') === Environment.Production
+						? (<UploadApiResponse>uploadedImage).public_id
+						: (<Express.Multer.File>uploadedImage).path,
+				imageType
+			});
+
+			await this.personRepo.save(person);
+
+			return CrudResultMessages.successCRUD('Photo', CRUD.create, '');
+		} catch (error) {
+			if (error instanceof TypeORMError) {
+				throw new TypeOrmException(
+					error.name,
+					error.message,
+					error.stack
+				);
+			}
+
+			throw new InternalServerErrorException(
+				(<UploadApiErrorResponse>error).message
+			);
 		}
 	}
 
-	public uploadMultipeFiles(files: Express.Multer.File[]) {}
+	public uploadMultipeFiles(
+		files: Express.Multer.File[],
+		personId: number,
+		requestId: number,
+		banner: number
+	) {
+		files.forEach(async (file, index) => {
+			try {
+				const uploadedImage =
+					this.nodeConfig.get('NODE_ENV') === Environment.Production
+						? await this.cloudinaryService.uploadFile(file)
+						: file;
+
+				const person = await this.personRepo.findOneBy({
+					id: personId
+				});
+				if (!person) {
+					throw new BadRequestException(
+						CrudResultMessages.itemNotFound(
+							`Person with id: ${personId}`,
+							''
+						)
+					);
+				}
+
+				const request = await this.requestRepo.findOneBy({
+					id: requestId
+				});
+				if (!request) {
+					throw new BadRequestException(
+						CrudResultMessages.itemNotFound(
+							`Request with id: ${requestId}`,
+							''
+						)
+					);
+				}
+
+				const photo: Photo = new Photo();
+				photo.imagePath =
+					this.nodeConfig.get('NODE_ENV') === Environment.Production
+						? (<UploadApiResponse>uploadedImage).public_id
+						: (<Express.Multer.File>uploadedImage).path;
+				photo.banner = banner === index + 1 ? true : false;
+
+				person.photos.push(photo);
+
+				await this.personRepo.save(person);
+
+				return CrudResultMessages.successCRUD('Photo', CRUD.create, '');
+			} catch (error) {
+				if (error instanceof TypeORMError) {
+					throw new TypeOrmException(
+						error.name,
+						error.message,
+						error.stack
+					);
+				}
+
+				throw new InternalServerErrorException(
+					(<UploadApiErrorResponse>error).message
+				);
+			}
+		});
+	}
 }

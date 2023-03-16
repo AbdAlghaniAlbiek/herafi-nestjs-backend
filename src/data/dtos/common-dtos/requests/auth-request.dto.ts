@@ -12,12 +12,12 @@ import {
 	IsEnum
 } from 'class-validator';
 import { PersonRole } from 'src/data/entities/constants/person-role.constants';
-import { AutoMappedApiProperty } from 'src/helpers/decorators/swagger.decorator';
+import { AutoMapApiProperty } from 'src/helpers/decorators/swagger.decorator';
 
 export class AuthPerson {
 	@IsEmail({ domain_specific_validation: true })
 	@IsNotEmpty()
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public email: string;
 
 	@IsStrongPassword({
@@ -28,14 +28,14 @@ export class AuthPerson {
 		minUppercase: 3
 	})
 	@IsNotEmpty()
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public password: string;
 }
 
 export class CreatePersonDto {
 	@IsNotEmpty()
 	@IsEmail({ domain_specific_validation: true })
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public email: string;
 
 	@Exclude()
@@ -47,40 +47,40 @@ export class CreatePersonDto {
 		minNumbers: 3,
 		minSymbols: 3
 	})
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public password: string;
 
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(1)
 	@MaxLength(30)
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public firstName: string;
 
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(1)
 	@MaxLength(30)
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public lastName: string;
 
 	@IsNotEmpty()
 	@IsPhoneNumber('SY')
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public phoneNumber: string;
 
 	@IsNotEmpty()
 	@IsString()
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public identityNumber: string;
 
 	@IsOptional()
 	@IsString()
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public fingerprintId: string;
 
 	@IsEnum(PersonRole)
-	@AutoMappedApiProperty()
+	@AutoMapApiProperty()
 	public personRole: PersonRole;
 }
 

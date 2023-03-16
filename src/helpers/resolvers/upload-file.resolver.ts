@@ -1,6 +1,7 @@
 import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { AcceptedImageMimeType } from '../constants/accepted-mime-type.constants';
 import { generateRandomExtendedImageNameValue } from './generate-random-values.resolver';
+import { UploadResultMessages } from '../constants/result-messages.constants';
 
 export function fileMimetypeFilter(...mimetypes: AcceptedImageMimeType[]) {
 	return (
@@ -11,11 +12,8 @@ export function fileMimetypeFilter(...mimetypes: AcceptedImageMimeType[]) {
 		if (mimetypes.some((m) => file.mimetype.includes(m))) {
 			callback(null, true);
 		} else {
-			callback(
-				new UnsupportedMediaTypeException(
-					`File type is not matching: ${mimetypes.join(', ')}`
-				),
-				false
+			throw new UnsupportedMediaTypeException(
+				UploadResultMessages.fileMimeTypeNotAcceptable(...mimetypes)
 			);
 		}
 	};

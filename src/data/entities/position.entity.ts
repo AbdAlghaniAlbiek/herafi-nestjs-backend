@@ -1,17 +1,17 @@
 import { Entity, OneToMany } from 'typeorm';
 import {
-	AutoMappedPrimaryGeneratedColumn,
-	AutoMappedColumn
+	AutoMapPrimaryGeneratedColumn,
+	AutoMapColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { CraftmanPosition } from './constants/craftman-position.constants';
 import { Person } from './person.entity';
 
 @Entity()
 export class Position {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		enum: CraftmanPosition,
 		enumName: 'craftman_position',
 		default: CraftmanPosition.Free

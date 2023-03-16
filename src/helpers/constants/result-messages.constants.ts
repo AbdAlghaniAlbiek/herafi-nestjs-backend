@@ -1,5 +1,6 @@
 import { JobId } from 'bull';
 import { CRUD } from './crud.contants';
+import { AcceptedImageMimeType } from './accepted-mime-type.constants';
 
 export class CrudResultMessages {
 	public static successCRUD(
@@ -121,7 +122,7 @@ export class ProcessorsResultMessages {
 	}
 }
 
-export class HashCryptoResultMessage {
+export class HashCryptoResultMessages {
 	public static generateSaltError(errorDetails: any) {
 		return `Error caused when it generate salt for hashing | Details: ${errorDetails}`;
 	}
@@ -135,12 +136,20 @@ export class HashCryptoResultMessage {
 	}
 }
 
-export class AesCryptoResultMessage {
+export class AesCryptoResultMessages {
 	public static encryptionError(errorDetails: any) {
 		return `Error caused when make Encryption for plain text | Details: ${errorDetails}`;
 	}
 
 	public static decryptionError(errorDetails: any) {
 		return `Error caused when make Decryption for plain text | Details: ${errorDetails}`;
+	}
+}
+
+export class UploadResultMessages {
+	public static fileMimeTypeNotAcceptable(
+		...mimetypes: AcceptedImageMimeType[]
+	) {
+		return `File type is not matching: ${mimetypes.join(', ')}`;
 	}
 }
