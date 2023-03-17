@@ -1,13 +1,13 @@
 import { classes } from '@automapper/classes';
 import { AutomapperModule } from '@automapper/nestjs';
 import {
+	CacheModule,
 	ClassSerializerInterceptor,
 	Module,
 	ValidationPipe
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import {
-	APP_FILTER,
 	APP_GUARD,
 	APP_INTERCEPTOR,
 	APP_PIPE,
@@ -23,14 +23,28 @@ import {
 	jwtConfig,
 	mailConfig,
 	nodeConfig,
-	pgConfig
+	pgConfig,
+	redisConfig
 } from './configurations/config.env';
-import { PostgresConfig } from './configurations/config.interfaces';
-import { HttpExceptionFilter } from './helpers/errors/exception-filter';
+import {
+	PostgresConfig,
+	RedisConfig
+} from './configurations/config.interfaces';
 import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
-import { CoreModule } from './services/core.module';
+import { CoreServicesModule } from './services/core-services.module';
 import { NodeSetupConfig } from './services/config/node-setup.config';
 import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
+
+import { AdminDesktopModule } from './apps/admin-desktop/admin-desktop.module';
+import { CraftmanMobileModule } from './apps/craftman-mobile/craftman-mobile.module';
+import { UserMobileModule } from './apps/user-mobile/user-mobile.module';
+import { CommonControllersModule } from './apps/common/common-controllers.module';
+import { BullModule } from '@nestjs/bull';
+import { ScheduleModule } from '@nestjs/schedule';
+import { RedisClientOptions } from 'redis';
+import * as redisStore from 'cache-manager-redis-store';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 
 @Module({
 	imports: [
@@ -44,7 +58,8 @@ import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
 				jwtConfig,
 				mailConfig,
 				nodeConfig,
-				pgConfig
+				pgConfig,
+				redisConfig
 			]
 		}),
 		TypeOrmModule.forRootAsync({
@@ -64,29 +79,59 @@ import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
 			limit: 10
 		}),
 		AutomapperModule.forRoot({
-			strategyInitializer: classes()
+			strategyInitializer: classes(),
+			errorHandler: {
+				handle: (error) => {
+					throw new MappingExcetion(
+						(<Error>error).name,
+						(<Error>error).message,
+						(<Error>error).stack
+					);
+				}
+			}
 		}),
-		CoreModule
-		// RouterModule.register([
-		// 	{
-		// 		path: 'admin',
-		// 		module: adminDesktopModule
-		// 	},
-		// 	{
-		// 		path: 'craftman',
-		// 		module: craftmanMobileModule
-		// 	},
-		// 	{
-		// 		path: 'user',
-		// 		module: userMobileModule
-		// 	}
-		// ])
+		BullModule.forRootAsync({
+			useFactory: (redisConfig: ConfigService<RedisConfig>) => ({
+				redis: {
+					host: redisConfig.get('HOST'),
+					port: redisConfig.get('PORT')
+				}
+			}),
+			inject: [ConfigService]
+		}),
+		ScheduleModule.forRoot(),
+		CacheModule.registerAsync({
+			useFactory: (redisConfig: ConfigService<RedisConfig>) =>
+				<RedisClientOptions>{
+					isGlobal: true,
+					store: redisStore,
+					host: redisConfig.get('HOST'),
+					port: redisConfig.get('PORT')
+				},
+			inject: [ConfigService]
+		}),
+		RouterModule.register([
+			{
+				path: 'common',
+				module: CommonControllersModule
+			},
+			{
+				path: 'admin',
+				module: AdminDesktopModule
+			},
+			{
+				path: 'craftman',
+				module: CraftmanMobileModule
+			},
+			{
+				path: 'user',
+				module: UserMobileModule
+			}
+		]),
+		EventEmitterModule.forRoot({ global: true }),
+		CoreServicesModule
 	],
 	providers: [
-		{
-			provide: APP_FILTER,
-			useClass: HttpExceptionFilter
-		},
 		{
 			provide: APP_PIPE,
 			useClass: ValidationPipe

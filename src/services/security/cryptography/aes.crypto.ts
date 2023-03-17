@@ -36,7 +36,7 @@ export class AESCryptography {
 		private iv: any
 	) {}
 
-	public Encryption(plainText: string): Promise<string> {
+	public encryption(plainText: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
 				const key = Buffer.from(this.key, this.encryptionEncoding);
@@ -54,14 +54,12 @@ export class AESCryptography {
 				cipherText += cipher.final(this.encryptionEncoding);
 				resolve(cipherText);
 			} catch (err) {
-				reject(
-					`\nError caused when make Encryption for plain text | Details: ${err}`
-				);
+				reject(err);
 			}
 		});
 	}
 
-	public Decryption(cipherText: string): Promise<string> {
+	public decryption(cipherText: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
 				const buff = Buffer.from(cipherText, this.bufferEncryption);
@@ -77,9 +75,7 @@ export class AESCryptography {
 					decipher.final().toString();
 				resolve(plainText);
 			} catch (err) {
-				reject(
-					`\nError caused when make Decryption for plain text | Details: ${err}`
-				);
+				reject(err);
 			}
 		});
 	}

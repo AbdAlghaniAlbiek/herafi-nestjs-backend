@@ -1,49 +1,41 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { HttpExceptionFilter } from './helpers/errors/exception-filter';
-import {
-	BadRequestException,
-	ValidationError,
-	ValidationPipe,
-	VersioningType,
-	VERSION_NEUTRAL
-} from '@nestjs/common';
-import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
-import helmet from 'helmet';
-import * as csurf from 'csurf';
+import { VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
+import { NodeConfig } from './configurations/config.interfaces';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+import { globalSetup as appGlobalSetup } from './setup/globals.setup';
+import { securitySetup as appSecuritySetup } from './setup/security.setup';
+import { appSwaggerSetup } from './setup/swagger.setup';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+		logger: console
+	});
 
-	app.setGlobalPrefix('api');
-	app.useGlobalFilters(new HttpExceptionFilter());
-	app.useGlobalPipes(
-		new ValidationPipe({
-			// validateCustomDecorators: true,
-			// transform: true,  The best way is to use the common pipes like: parseIntPipe, parseBooleanPipe
-			whitelist: true,
-			forbidNonWhitelisted: true,
-			stopAtFirstError: true,
-			validateCustomDecorators: true,
-			exceptionFactory: (validationErrors: ValidationError[] = []) => {
-				return new BadRequestException(`${validationErrors}`);
-			}
-		})
-	);
-	app.useGlobalInterceptors(new TimeoutInterceptor());
+	// Global Enhancers
+	appGlobalSetup(app);
 
+	// Versioning of application
 	app.enableVersioning({
 		type: VersioningType.HEADER,
 		header: 'Version',
 		defaultVersion: VERSION_NEUTRAL
 	});
 
-	app.use(helmet());
-	app.use(csurf());
-	app.enableCors();
+	// Security stuff
+	appSecuritySetup(app);
 
-	await app.listen(app.get(ConfigService).get('PORT'));
+	// Serve static assets
+	app.useStaticAssets(join(__dirname, 'assets'));
+
+	// Swagger setup
+	appSwaggerSetup(app);
+
+	await app.listen(app.get(ConfigService<NodeConfig>).get('PORT'));
+
+	// $ npx @compodoc/compodoc -p tsconfig.json -s  Run this Cli comman in the end of project
 }
 
 bootstrap();

@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, OneToMany } from 'typeorm';
 import { RequestStatus } from './constants/request-status.constants';
@@ -8,10 +8,10 @@ import { Request } from './request.entity';
 
 @Entity()
 export class Status {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		enum: RequestStatus,
 		enumName: 'request_status',
 		default: RequestStatus.Request

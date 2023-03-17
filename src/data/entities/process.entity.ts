@@ -1,16 +1,16 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, OneToMany } from 'typeorm';
 import { Request } from './request.entity';
 
 @Entity()
 export class Process {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public name: string;
 
 	@OneToMany(() => Request, (request) => request.process, {

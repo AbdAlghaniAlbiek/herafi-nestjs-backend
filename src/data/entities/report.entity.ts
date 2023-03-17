@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Person } from './person.entity';
@@ -8,34 +8,34 @@ import { Request } from './request.entity';
 
 @Entity()
 export class Report {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public peronsId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public personReportedOnId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public requestId: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public title: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public context: string;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public speed: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public dealing: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public price: number;
 
-	@AutoMappedColumn()
+	@AutoMapColumn()
 	public lates: number;
 
 	@ManyToOne(() => Person, (person) => person.reports)

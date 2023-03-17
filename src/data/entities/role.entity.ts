@@ -1,6 +1,6 @@
 import {
-	AutoMappedColumn,
-	AutoMappedPrimaryGeneratedColumn
+	AutoMapColumn,
+	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
 import { Entity, OneToMany } from 'typeorm';
 import { PersonRole } from './constants/person-role.constants';
@@ -8,10 +8,10 @@ import { Person } from './person.entity';
 
 @Entity()
 export class Role {
-	@AutoMappedPrimaryGeneratedColumn()
+	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMappedColumn({
+	@AutoMapColumn({
 		enum: PersonRole,
 		enumName: 'person_role',
 		default: PersonRole.User
