@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { personProfile } from './mappers/person-profile.mapper';
+import { PhotoProfile } from './mappers/photo-profile.mapper';
+import { PersonProfile } from './mappers/person-profile.mapper';
 
 @Module({
-	exports: [personProfile],
-	providers: [personProfile]
+	exports: [PersonProfile, PhotoProfile],
+	providers: [PersonProfile, PhotoProfile]
 })
 export class DataModule {}

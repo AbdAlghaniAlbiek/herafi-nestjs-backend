@@ -38,6 +38,18 @@ export interface MailConfig {
 	HOST: string;
 	PORT: string;
 	IS_SECURE: boolean;
+	DEFAULT_FROM_USER: string;
 	AUTH_USER: string;
 	AUTH_PASSWORD: string;
+}
+
+export interface RedisConfig {
+	HOST: string;
+	PORT: string;
+}
+
+export interface CloudinaryConfig {
+	CLOUD_NAME: string;
+	API_KEY: string;
+	API_SECRET: string;
 }
