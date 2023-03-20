@@ -11,7 +11,6 @@ import { MailConfig, RedisConfig } from 'src/configurations/config.interfaces';
 import { ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { QueuesNames } from 'src/helpers/constants/queues.constants';
-import { pipeParsers } from './pipes/custom-pipes.pipe';
 
 @Module({
 	imports: [
@@ -55,16 +54,14 @@ import { pipeParsers } from './pipes/custom-pipes.pipe';
 		MailService,
 		MailQueueProducer,
 		MailQueueConsumer,
-		MailSendEvents,
-		pipeParsers
+		MailSendEvents
 	],
 	providers: [
 		CustomLoggerService,
 		MailService,
 		MailQueueProducer,
 		MailQueueConsumer,
-		MailSendEvents,
-		pipeParsers
+		MailSendEvents
 	]
 })
 export class EnhancersModule {}

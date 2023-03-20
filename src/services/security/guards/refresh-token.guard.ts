@@ -10,7 +10,7 @@ import {
 	UnauthorizedException
 } from '@nestjs/common/exceptions';
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
-import { ResultMessages } from 'src/helpers/constants/result-messages.constants';
+import { AuthResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { AESCryptography } from '../cryptography/aes.crypto';
 import { StrategiesSpecifics } from 'src/helpers/constants/strategies-specifics.constants';
 
@@ -34,7 +34,7 @@ export class RefreshTokenAuthGuard extends AuthGuard(
 			.findOneBy({ id: req.user['sub'] })
 			.then((person) => {
 				req.headers['Authorization'] = this.aesService.decryption(
-					person.refreshToken
+					person.socialProvider.refreshToken
 				);
 				return super.canActivate(context);
 			})
@@ -45,7 +45,9 @@ export class RefreshTokenAuthGuard extends AuthGuard(
 
 	handleRequest(err, user, info: Error) {
 		if (info instanceof TokenExpiredError) {
-			throw new UnauthorizedException(ResultMessages.unauthorizedUser());
+			throw new UnauthorizedException(
+				AuthResultMessages.unauthorizedUser()
+			);
 		}
 
 		this.authRepo.updateRefreshToken(user['sub'], user.refreshToken);
