@@ -48,24 +48,15 @@ export class PersonProfile extends AutomapperProfile {
 	}
 
 	private updatePersonDtoMap(mapper: any) {
-		createMap(mapper, Person, UpdatePersonDto);
 		createMap(
 			mapper,
 			UpdatePersonDto,
 			Person,
 			forMember((dest) => dest.id, ignore())
 		);
-		createMap(mapper, UpdatePersonDto, Person);
 	}
 
 	private readPersonDtoMap(mapper: any) {
 		createMap(mapper, Person, ReadPersonDto);
-		createMap(
-			mapper,
-			ReadPersonDto,
-			Person,
-			forMember((dest) => dest.id, ignore())
-		);
-		createMap(mapper, ReadPersonDto, Person);
 	}
 }

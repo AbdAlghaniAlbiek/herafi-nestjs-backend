@@ -83,9 +83,8 @@ import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 			errorHandler: {
 				handle: (error) => {
 					throw new MappingExcetion(
-						(<Error>error).name,
-						(<Error>error).message,
-						(<Error>error).stack
+						MappingExcetion.name,
+						`${error.toString()}`
 					);
 				}
 			}

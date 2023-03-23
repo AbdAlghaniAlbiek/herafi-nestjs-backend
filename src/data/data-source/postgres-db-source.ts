@@ -18,9 +18,9 @@ export function postgresDbSource(
 		username: postgresConfig.get('PG_USER'),
 		password: postgresConfig.get('PG_PASSWORD'),
 		database: postgresConfig.get('PG_DB_NAME'),
-		// url: postgresConfig.get('PG_CONNNECTION_STRING'), Doesn't working fortunatly
-		entities: [join(__dirname, '**', '*.entity.js')],
-		migrations: [join(__dirname, '**', 'migrations/*.js')],
+		// url: postgresConfig.get('PG_CONNNECTION_STRING'), Doesn't work fortunatly
+		entities: [join(__dirname, '../**', '*.entity.js')],
+		migrations: [join(__dirname, '..', 'migrations/*.js')],
 		synchronize:
 			nodeSetupConfig.getEnvironment === Environment.Development
 				? true

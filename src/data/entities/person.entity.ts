@@ -25,10 +25,10 @@ export class Person {
 	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMapPrimaryGeneratedColumn()
+	@AutoMapColumn()
 	public firstName: string;
 
-	@AutoMapPrimaryGeneratedColumn()
+	@AutoMapColumn()
 	public lastName: string;
 
 	@AutoMapColumn()
