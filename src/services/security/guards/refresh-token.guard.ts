@@ -1,27 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { ExecutionContext } from '@nestjs/common/interfaces';
 import { AuthGuard } from '@nestjs/passport';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Person } from 'src/data/entities/person.entity';
-import { Repository } from 'typeorm';
 import { TokenExpiredError } from 'jsonwebtoken';
 import {
 	InternalServerErrorException,
 	UnauthorizedException
 } from '@nestjs/common/exceptions';
-import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
 import { AuthResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { AESCryptography } from '../cryptography/aes.crypto';
-import { StrategiesSpecifics } from 'src/helpers/constants/strategies-specifics.constants';
+import { Strategies } from 'src/helpers/constants/strategies-specifics.constants';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Person } from 'src/data/entities/person.entity';
 
 @Injectable()
-export class RefreshTokenAuthGuard extends AuthGuard(
-	StrategiesSpecifics.RefreshToken
-) {
+export class RefreshTokenAuthGuard extends AuthGuard(Strategies.RefreshToken) {
 	constructor(
-		@InjectRepository(Person) private personRepo: Repository<Person>,
-		private authRepo: AuthRepo,
-		private aesService: AESCryptography
+		private aesService: AESCryptography,
+		@InjectRepository(Person) private personRepo: Repository<Person>
 	) {
 		super();
 	}
@@ -50,7 +46,8 @@ export class RefreshTokenAuthGuard extends AuthGuard(
 			);
 		}
 
-		this.authRepo.updateRefreshToken(user['sub'], user.refreshToken);
+		// For updating refreshToken in db in CompleteAuth middleware
+		user.requiredRefreshToken = true;
 
 		return user;
 	}

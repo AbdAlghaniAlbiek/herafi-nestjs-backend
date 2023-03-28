@@ -17,6 +17,8 @@ import {
 import { HashCryptography } from 'src/services/security/cryptography/hash.crypto';
 import { AccessTokenStrategy } from 'src/services/security/strategies/access-token.strategy';
 import { RefreshTokenStrategy } from 'src/services/security/strategies/refresh-token.strategy';
+import { AccessTokenAuthGuard } from './guards/access-token.guard';
+import { RefreshTokenAuthGuard } from './guards/refresh-token.guard';
 
 @Module({
 	imports: [JwtModule.register({})],
@@ -24,7 +26,9 @@ import { RefreshTokenStrategy } from 'src/services/security/strategies/refresh-t
 		AESCryptography,
 		HashCryptography,
 		AccessTokenStrategy,
-		RefreshTokenStrategy
+		RefreshTokenStrategy,
+		AccessTokenAuthGuard,
+		RefreshTokenAuthGuard
 	],
 	providers: [
 		{
@@ -73,7 +77,9 @@ import { RefreshTokenStrategy } from 'src/services/security/strategies/refresh-t
 				);
 			},
 			inject: [ConfigService]
-		}
+		},
+		AccessTokenAuthGuard,
+		RefreshTokenAuthGuard
 	]
 })
 export class SecurityModule {}

@@ -33,7 +33,7 @@ Architecture of this project is crafted so carefully so you can see each folder 
 -   [Versions](#versions)
 -   [Project Status](project-status)
 
-## Setup
+## 🚩 Setup
 
 To Initialize this NestJS project you need follow these instructions:
 
@@ -45,67 +45,67 @@ To Initialize this NestJS project you need follow these instructions:
 6. Create your .env with your secrets following the structure of `.env.example`
 7. `npm run start:dev`
 
-## Libraries Used
+## 🧰 Libraries Used
 
 Various of libraries (modules) has been used that make this project able to handle requests of three client applications, so I'll go forward descriping these modules that I used.
 
-### Configurations
+### ⚙ Configurations
 
 The configuartion of all services and modules of this project it loaded from **.env** file and this sync with [dotenv](https://www.dotenv.org/) host service so all team members can push/pull (with custom permmision) securitly privatly between them without send **.env** files in emails or slack environments
 
 `ConfigModule` it depends on custom hand-made functions that load data then they implemented in this module, by this We can call `ConfigService` with custom interface refers to that implemented functions, with that we can hard-coded all strings that existing in **.env** file.
 
-### Mapping Data
+### 🧾 Mapping Data
 
 `MapperModule` makes the way of mapping data from **entites** to **DTOs** and vice versa so easily by defining classes that have profiles about how mapping operation between **entites** and **DTOs** will happen.
 
-### TypeOrm
+### 🛢 TypeOrm
 
 TypeORM is an ORM that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms and can be used with TypeScript and JavaScript (ES5, ES6, ES7, ES8). Its goal is to always support the latest JavaScript features and provide additional features that help you to develop any kind of application that uses databases - from small applications with a few tables to large scale enterprise applications with multiple databases.
 
 In this project I used `TypeOrmModule` to connect to postgress database and make realtions between entities classes and db tables using sync approach in dev environment or migrations files in prod environment, by this I cut short Entites Repo layer and I can use **InjectRepostity(Entity)** decorator directly instead, and make various of sql operations on db in easily way.
 
-### Upload Files
+### 🚀 Upload Files
 
 Uploading files to server is so important thing that any backend server must deal with it so there is such already defined module `MulterModule` that enable nestjs backend server to handle sended files to it.
 
 And as additional thing I provide it is about uploading files to [Cloudinary](https://cloudinary.com/) cloud-service by implementing `CloudinaryModule` for uploading files (images) to this host service in production environment.
 
-### Queues Pattern
+### ⛓ Queues Pattern
 
 This pattern enable backend server to make jobs in certain queues and these jobs do some operations on seperate process freeing the process that run my Nestjs backend to handle various of requests, and it depends on **producer-consumer** jobs concept by adding jobs to the queues and remove them when they complete their mission.
 
 `BullModule` is the library that used for this purpose and it heavily depends on [Redis](https://redis.io/) caching mechanism .
 
-### Sending Emails
+### 📧 Sending Emails
 
 `MailerModule` makes sending emails to the clients much easier than before, and I connect its configuration with SendGrid environment, so it pretty awesome to see your emails sended on these 3 applications.
 
-### Task Schedualling
+### ⏰ Task Schedualling
 
 `ScheduleModule` create jobs that works on different processes, and for this project I create **Cron** that works permanently as Nestjs backend server run, also it depends on **producer-consumer** concept by adding names to the functions that have **Cron** decorator, but I don't use this pattern in my project.
 
-### Event Emitter
+### ⚡ Event Emitter
 
 Events is so powerful tool to handle various of backend operations outside of specific scope, so we can use everywhere, and `EventEmitterModule` makes functions that have **OnEvent** decorator available in all of this project so we can call it in any controller, service, guard, pipe, .... so easily.
 
-### Caching Data
+### 💾 Caching Data
 
 Caching is so important in backend world that makes response of backend so fast, I used `CacheModule` for caching most requested data from the server like **cities** data and so on.
 
 `CacheModule` is using RedisOptions so it depends on [Redis](https://redis.io/) configuration for caching data.
 
-### Routing
+### ⚓ Routing
 
 Controllers considered as base routing layer in NestJS applications but in big production applications it doesn't enough like in this project I have 3 client side application to deal with, so can I make global prefix for each application that have its specific APIs to fetch data from them.
 
 NestJS provides awesome `RouterModule` that enable global prefix for each module specified for specific client application that have its specific APIs to deal with.
 
-### Swagger
+### 📖 Swagger
 
 Implementing Open API principles using `SwaggerModule` and I made a specific swagger UI for each client application in specific route
 
-### Security
+### 🛡 Security
 
 This project it contain on all possible security tools to make backend server secure as possible as it can
 

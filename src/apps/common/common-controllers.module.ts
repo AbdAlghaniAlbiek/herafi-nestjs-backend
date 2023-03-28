@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
 import { AuthController } from './controllers/auth.controller';
 import { MulterModule } from '@nestjs/platform-express';
@@ -15,6 +15,7 @@ import { Environment } from 'src/helpers/constants/environments.constants';
 import { resolve } from 'path';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { CloudinaryModule } from 'nestjs-cloudinary';
+import { CompleteAuthMiddleware } from 'src/middlewares/complete-auth.middlewre';
 
 @Module({
 	imports: [
@@ -43,6 +44,18 @@ import { CloudinaryModule } from 'nestjs-cloudinary';
 		})
 	],
 	controllers: [AuthController, UploadController],
-	providers: [AuthRepo, UploadRepo]
+	providers: [AuthRepo, UploadRepo, CompleteAuthMiddleware]
 })
-export class CommonControllersModule {}
+export class CommonControllersModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer
+			.apply(CompleteAuthMiddleware)
+			.forRoutes(UploadController)
+			.apply(CompleteAuthMiddleware)
+			.forRoutes(
+				'auth/verify-account',
+				'auth/logout',
+				'auth/reset-password'
+			);
+	}
+}
