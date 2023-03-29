@@ -121,6 +121,8 @@ export class AuthRepo {
 				{ verifyCode: null }
 			);
 
+			await this.personRepo.update({ id: personId }, { verified: true });
+
 			return CrudResultMessages.successCRUD(
 				`Person with id: ${personId}`,
 				CRUD.Update,

@@ -79,10 +79,16 @@ export class Person {
 	public blockFinishDate: Date;
 
 	@AutoMapColumn()
+	public isChecked: boolean;
+
+	@AutoMapColumn()
 	public levelId: number;
 
 	@AutoMapColumn()
 	public positionId: number;
+
+	@AutoMapColumn()
+	public verified?: boolean;
 
 	@OneToMany(() => Favourite, (favourite) => favourite.person, {
 		cascade: true,
