@@ -9,9 +9,9 @@ export class GeneralUserDto {
 export class UserDetailsProfileDto {
 	constructor(
 		public id: number,
-		public name: number,
+		public name: string,
+		public email: string,
 		public phoneNumber: string,
-		public identityNumber: string,
 		public nationalNumber: string,
 		public city: string,
 		public dateJoin: Date,

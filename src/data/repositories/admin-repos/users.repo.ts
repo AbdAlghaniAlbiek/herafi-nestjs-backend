@@ -74,7 +74,7 @@ export class UsersRepo {
 					'p.id = per_img.person_id'
 				)
 				.where(
-					'p.lowest_cost = 0 AND p.highest_cost = 0 AND p.verified = 1 AND p.verify_code = 0 AND p.is_admin = 0'
+					'p.lowest_cost = 0 AND p.highest_cost = 0 AND p.verified = t'
 				)
 				.skip(pageSize)
 				.take(offset)
@@ -101,7 +101,7 @@ export class UsersRepo {
 
 			const userDetailsProfile = await this.personRepo
 				.createQueryBuilder()
-				.select(['p.id, p.name, p.phone_number'])
+				.select(['p.id', 'p.name', 'p.email', 'p.phone_number'])
 				.addSelect('p.identity_number', 'national_number')
 				.addSelect('c.name', 'city')
 				.addSelect('p.date_join')
@@ -194,8 +194,8 @@ export class UsersRepo {
 			return new UserDetailsProfileDto(
 				userDetailsProfile.id,
 				userDetailsProfile.name,
+				userDetailsProfile.email,
 				userDetailsProfile.phone_number,
-				userDetailsProfile.identity_number,
 				userDetailsProfile.national_number,
 				userDetailsProfile.city,
 				userDetailsProfile.date_join,
