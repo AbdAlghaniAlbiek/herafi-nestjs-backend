@@ -61,17 +61,20 @@ The configuartion of all services and modules of this project it loaded from **.
 
 ### 🛢 TypeOrm
 
+
 TypeORM is an ORM that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms and can be used with TypeScript and JavaScript (ES5, ES6, ES7, ES8). Its goal is to always support the latest JavaScript features and provide additional features that help you to develop any kind of application that uses databases - from small applications with a few tables to large scale enterprise applications with multiple databases.
 
 In this project I used `TypeOrmModule` to connect to postgress database and make realtions between entities classes and db tables using sync approach in dev environment or migrations files in prod environment, by this I cut short Entites Repo layer and I can use **InjectRepostity(Entity)** decorator directly instead, and make various of sql operations on db in easily way.
 
 ### 🚀 Upload Files
 
+
 Uploading files to server is so important thing that any backend server must deal with it so there is such already defined module `MulterModule` that enable nestjs backend server to handle sended files to it.
 
 And as additional thing I provide it is about uploading files to [Cloudinary](https://cloudinary.com/) cloud-service by implementing `CloudinaryModule` for uploading files (images) to this host service in production environment.
 
 ### ⛓ Queues Pattern
+
 
 This pattern enable backend server to make jobs in certain queues and these jobs do some operations on seperate process freeing the process that run my Nestjs backend to handle various of requests, and it depends on **producer-consumer** jobs concept by adding jobs to the queues and remove them when they complete their mission.
 
@@ -97,6 +100,7 @@ Caching is so important in backend world that makes response of backend so fast,
 
 ### ⚓ Routing
 
+
 Controllers considered as base routing layer in NestJS applications but in big production applications it doesn't enough like in this project I have 3 client side application to deal with, so can I make global prefix for each application that have its specific APIs to fetch data from them.
 
 NestJS provides awesome `RouterModule` that enable global prefix for each module specified for specific client application that have its specific APIs to deal with.
@@ -106,6 +110,7 @@ NestJS provides awesome `RouterModule` that enable global prefix for each module
 Implementing Open API principles using `SwaggerModule` and I made a specific swagger UI for each client application in specific route
 
 ### 🛡 Security
+
 
 This project it contain on all possible security tools to make backend server secure as possible as it can
 
