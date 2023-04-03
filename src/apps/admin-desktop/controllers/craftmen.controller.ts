@@ -14,6 +14,7 @@ import {
 	ApiBadRequestResponse,
 	ApiCreatedResponse,
 	ApiInternalServerErrorResponse,
+	ApiNotFoundResponse,
 	ApiOkResponse,
 	ApiOperation,
 	ApiParam,
@@ -78,8 +79,10 @@ export class CraftmenController {
 		type: CraftmanDetailsProfileDto
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Params not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Params not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -108,8 +111,10 @@ export class CraftmenController {
 		isArray: true
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Params not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Params not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -136,8 +141,10 @@ export class CraftmenController {
 		type: [String]
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Params not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Params not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -200,8 +207,10 @@ export class CraftmenController {
 		type: NewMembersCraftmanProfile
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Param not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Param not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -231,6 +240,9 @@ export class CraftmenController {
 	})
 	@ApiBadRequestResponse({
 		description: 'When Param not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -292,8 +304,10 @@ export class CraftmenController {
 		type: Person
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Query/Param not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Query/Param not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'
@@ -328,8 +342,10 @@ export class CraftmenController {
 		description: 'Refusing a new craftman member without any error'
 	})
 	@ApiBadRequestResponse({
-		description:
-			"When Param not match specified rules || When id of craftman doesn't exist in db"
+		description: 'When Param not match specified rules'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of craftman doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm error related just happened'

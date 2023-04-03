@@ -2,7 +2,8 @@ import { Process } from '@nestjs/bull';
 import {
 	BadRequestException,
 	Injectable,
-	InternalServerErrorException
+	InternalServerErrorException,
+	NotFoundException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -45,7 +46,7 @@ export class UsersRepo {
 		const isUersExist = await this.personRepo.findOneBy({ id: userId });
 
 		if (!isUersExist) {
-			throw new BadRequestException(
+			throw new NotFoundException(
 				CrudResultMessages.itemNotFound(`User with id ${userId}`)
 			);
 		}

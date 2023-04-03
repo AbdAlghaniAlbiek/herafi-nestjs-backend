@@ -18,7 +18,10 @@ import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CRUD } from 'src/helpers/constants/crud.contants';
 import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
-import { InternalServerErrorException } from '@nestjs/common/exceptions';
+import {
+	InternalServerErrorException,
+	NotFoundException
+} from '@nestjs/common/exceptions';
 import { MailQueueProducer } from 'src/services/enhancers/queues/producers/mail.producer';
 import { SocialProvider } from 'src/data/entities/social-provider.entity';
 
@@ -44,7 +47,7 @@ export class AuthRepo {
 			});
 
 			if (userExists) {
-				throw new BadRequestException(
+				throw new NotFoundException(
 					AuthResultMessages.personsAlreadyExist(
 						createPersonDto.email
 					)
@@ -110,7 +113,7 @@ export class AuthRepo {
 				verifyCode
 			});
 			if (!socialProviderPerson)
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with id: ${personId}`
 					)
@@ -146,7 +149,7 @@ export class AuthRepo {
 				email: authPerson.email
 			});
 			if (!person)
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with email: ${authPerson.email}`
 					)
@@ -191,7 +194,7 @@ export class AuthRepo {
 		try {
 			const person = this.personRepo.findOneBy({ id: personId });
 			if (!person) {
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with id: ${personId}`
 					)

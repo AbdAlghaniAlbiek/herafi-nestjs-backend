@@ -9,6 +9,7 @@ import {
 import {
 	ApiBadRequestResponse,
 	ApiInternalServerErrorResponse,
+	ApiNotFoundResponse,
 	ApiOkResponse,
 	ApiOperation,
 	ApiParam
@@ -33,6 +34,9 @@ export class SettingsController {
 	@ApiBadRequestResponse({
 		description:
 			'When Param not match specified rules || When id not match any admin account in db'
+	})
+	@ApiNotFoundResponse({
+		description: "When id of admin doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm related error just occurs'

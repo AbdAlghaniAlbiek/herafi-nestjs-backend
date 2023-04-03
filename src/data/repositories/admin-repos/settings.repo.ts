@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AdminProfileDto } from 'src/data/dtos/admin-dtos/responses/settings-respons.dto';
 import { City } from 'src/data/entities/city.entity';
 import { ImageType } from 'src/data/entities/constants/image-type.constants';
 import { Person } from 'src/data/entities/person.entity';
 import { Photo } from 'src/data/entities/photo.entity';
+import { CrudResultMessages } from 'src/helpers/constants/result-messages.constants';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -15,6 +16,14 @@ export class SettingsRepo {
 
 	public async getAdminProfile(adminId) {
 		try {
+			const isAdminExist = this.personRepo.findOneBy({ id: adminId });
+
+			if (!isAdminExist) {
+				throw new NotFoundException(
+					CrudResultMessages.itemNotFound(`admin with id: ${adminId}`)
+				);
+			}
+
 			const adminProfile = await this.personRepo
 				.createQueryBuilder()
 				.select(['p.id', 'p.name', 'p.email', 'p.phone_number'])

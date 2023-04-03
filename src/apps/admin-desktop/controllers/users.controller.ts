@@ -15,6 +15,7 @@ import { UserRole } from 'src/helpers/constants/user-role.constants';
 import {
 	ApiBadRequestResponse,
 	ApiInternalServerErrorResponse,
+	ApiNotFoundResponse,
 	ApiOkResponse,
 	ApiOperation,
 	ApiParam,
@@ -78,6 +79,9 @@ export class UsersController {
 	})
 	@ApiBadRequestResponse({
 		description: "When Query don't match specified rules"
+	})
+	@ApiNotFoundResponse({
+		description: "When id of user doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TyprOrm related error just occurs'
@@ -174,6 +178,9 @@ export class UsersController {
 	@ApiBadRequestResponse({
 		description: "When Param don't match specified rules"
 	})
+	@ApiNotFoundResponse({
+		description: "When id of user doesn't exist in db"
+	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TyprOrm related error just occurs'
 	})
@@ -200,6 +207,9 @@ export class UsersController {
 	@ApiBadRequestResponse({
 		description: "When Param don't match specified rules"
 	})
+	@ApiNotFoundResponse({
+		description: "When id of user doesn't exist in db"
+	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TyprOrm related error just occurs'
 	})
@@ -225,6 +235,9 @@ export class UsersController {
 	})
 	@ApiBadRequestResponse({
 		description: "When Param don't match specified rules"
+	})
+	@ApiNotFoundResponse({
+		description: "When id of user doesn't exist in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TyprOrm related error just occurs'

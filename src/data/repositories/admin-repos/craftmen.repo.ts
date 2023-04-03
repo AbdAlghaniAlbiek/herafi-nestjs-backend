@@ -1,7 +1,8 @@
 import {
 	BadRequestException,
 	Injectable,
-	InternalServerErrorException
+	InternalServerErrorException,
+	NotFoundException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -54,7 +55,7 @@ export class CraftmenRepo {
 		});
 
 		if (!isCraftmanExist) {
-			throw new BadRequestException(
+			throw new NotFoundException(
 				CrudResultMessages.itemNotFound(
 					`Craftman with id ${craftmanId}`
 				)
