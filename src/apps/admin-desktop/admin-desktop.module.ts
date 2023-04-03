@@ -7,14 +7,22 @@ import { SettingsController } from './controllers/settings.controller';
 import { SettingsRepo } from 'src/data/repositories/admin-repos/settings.repo';
 import { DashboardController } from './controllers/dashboard.controller';
 import { DashboardRepo } from 'src/data/repositories/admin-repos/dashboard.repo';
+import { AnalyzesController } from './controllers/analyzes.controller';
 
 @Module({
 	controllers: [
 		UsersController,
 		CraftmenController,
 		SettingsController,
-		DashboardController
+		DashboardController,
+		AnalyzesController
 	],
-	providers: [UsersRepo, CraftmenRepo, SettingsRepo, DashboardRepo]
+	providers: [
+		UsersRepo,
+		CraftmenRepo,
+		SettingsRepo,
+		DashboardRepo,
+		AnalyzesController
+	]
 })
 export class AdminDesktopModule {}
