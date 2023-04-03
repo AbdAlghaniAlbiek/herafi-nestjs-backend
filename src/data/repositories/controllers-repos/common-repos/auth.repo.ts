@@ -20,8 +20,6 @@ import { CRUD } from 'src/helpers/constants/crud.contants';
 import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
 import { InternalServerErrorException } from '@nestjs/common/exceptions';
 import { MailQueueProducer } from 'src/services/enhancers/queues/producers/mail.producer';
-import { CryptographyException } from 'src/helpers/security/errors/custom-exceptions';
-import { exceptionHandler } from 'src/helpers/security/errors/exception-handler';
 import { SocialProvider } from 'src/data/entities/social-provider.entity';
 
 @Injectable()
@@ -95,8 +93,7 @@ export class AuthRepo {
 			});
 			return accessToken;
 		} catch (err) {
-			exceptionHandler(
-				err,
+			throw new InternalServerErrorException(
 				CrudResultMessages.failedCRUD(
 					`Person with email ${createPersonDto.email}`,
 					CRUD.create,
@@ -124,14 +121,15 @@ export class AuthRepo {
 				{ verifyCode: null }
 			);
 
+			await this.personRepo.update({ id: personId }, { verified: true });
+
 			return CrudResultMessages.successCRUD(
 				`Person with id: ${personId}`,
 				CRUD.Update,
 				''
 			);
 		} catch (err) {
-			exceptionHandler(
-				err,
+			throw new InternalServerErrorException(
 				CrudResultMessages.failedCRUD(
 					`Person with id: ${personId}`,
 					CRUD.Update,
@@ -178,8 +176,7 @@ export class AuthRepo {
 			await this.updateRefreshToken(person.id, refreshToken);
 			return accessToken;
 		} catch (err) {
-			exceptionHandler(
-				err,
+			throw new InternalServerErrorException(
 				CrudResultMessages.failedCRUD(
 					`Person with email: ${authPerson.email}`,
 					CRUD.Update,
@@ -213,8 +210,7 @@ export class AuthRepo {
 				''
 			);
 		} catch (err) {
-			exceptionHandler(
-				err,
+			throw new InternalServerErrorException(
 				CrudResultMessages.failedCRUD(
 					`Person with id: ${personId}`,
 					CRUD.Update,
@@ -228,7 +224,7 @@ export class AuthRepo {
 		try {
 			return this.hashService.hashingPlainText(data);
 		} catch (err) {
-			throw new CryptographyException(err.name, err.message, err.stack);
+			throw new InternalServerErrorException(`${err}`);
 		}
 	}
 

@@ -11,7 +11,8 @@ import { appSwaggerSetup } from './setup/swagger.setup';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-		logger: console
+		logger: console,
+		bodyParser: false
 	});
 
 	// Global Enhancers

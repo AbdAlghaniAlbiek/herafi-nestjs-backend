@@ -46,6 +46,8 @@ export interface MailConfig {
 export interface RedisConfig {
 	HOST: string;
 	PORT: string;
+	USER: string;
+	PASSWORD: string;
 }
 
 export interface CloudinaryConfig {

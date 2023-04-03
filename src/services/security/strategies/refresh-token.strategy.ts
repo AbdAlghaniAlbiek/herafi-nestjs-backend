@@ -2,12 +2,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 import { Injectable } from '@nestjs/common';
-import { StrategiesSpecifics } from 'src/helpers/constants/strategies-specifics.constants';
+import { Strategies } from 'src/helpers/constants/strategies-specifics.constants';
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
 	Strategy,
-	StrategiesSpecifics.RefreshToken
+	Strategies.RefreshToken
 ) {
 	constructor(
 		privateKey: string,
