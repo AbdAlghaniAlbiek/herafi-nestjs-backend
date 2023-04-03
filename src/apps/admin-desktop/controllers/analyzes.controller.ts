@@ -1,4 +1,11 @@
-import { Get, ParseIntPipe, Query, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+	Get,
+	HttpCode,
+	HttpStatus,
+	ParseIntPipe,
+	Query,
+	VERSION_NEUTRAL
+} from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
 	ApiInternalServerErrorResponse,
@@ -13,8 +20,11 @@ import {
 	ProfitsPerDayDetailsDto
 } from 'src/data/dtos/admin-dtos/responses/analyzes-response.dto';
 import { AnalyzesRepo } from 'src/data/repositories/admin-repos/analyzes.repo';
+import { UserRole } from 'src/helpers/constants/user-role.constants';
+import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
 
+@Authorized(UserRole.Admin)
 @ApiController({ path: 'analyzes', version: VERSION_NEUTRAL })
 export class AnalyzesController {
 	constructor(private analyzesRepo: AnalyzesRepo) {}
@@ -33,6 +43,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-profits-years')
+	@HttpCode(HttpStatus.OK)
 	public getProfitsYears() {
 		return this.analyzesRepo.getProfitsYears();
 	}
@@ -58,6 +69,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-profits-months')
+	@HttpCode(HttpStatus.OK)
 	public getProfitsMonths(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getProfitsMonths(year);
 	}
@@ -76,6 +88,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-profits-years-details')
+	@HttpCode(HttpStatus.OK)
 	public getProfitsYearsDetails() {
 		return this.analyzesRepo.getProfitsYearsDetails();
 	}
@@ -102,6 +115,7 @@ export class AnalyzesController {
 		type: Number
 	})
 	//#endregion
+	@HttpCode(HttpStatus.OK)
 	@Get('get-profits-months-details')
 	public getProfitsMonthsDetails(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getProfitsMonthsDetails(year);
@@ -136,6 +150,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-profits-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getProfitsDaysDetails(
 		@Query('year', ParseIntPipe) year: number,
 		@Query('month', ParseIntPipe) month: number
@@ -162,6 +177,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-craftmen-years')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmenYears() {
 		return this.analyzesRepo.getCraftmenYears();
 	}
@@ -184,6 +200,7 @@ export class AnalyzesController {
 		type: Number
 	})
 	//#endregion
+	@HttpCode(HttpStatus.OK)
 	@Get('get-craftmen-months')
 	public getCraftmenMonths(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getCraftmenMonths(year);
@@ -204,6 +221,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-craftmen-years-details')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmenYearsDetails() {
 		return this.analyzesRepo.getCraftmenYearsDetails();
 	}
@@ -229,6 +247,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-craftmen-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmenMonthsDetails(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getCraftmenMonthsDetails(year);
 	}
@@ -260,6 +279,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-craftmen-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmenDaysDetail(
 		@Query('year', ParseIntPipe) year: number,
 		@Query('month', ParseIntPipe) month: number
@@ -286,6 +306,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-users-years')
+	@HttpCode(HttpStatus.OK)
 	public getUsersYears() {
 		return this.analyzesRepo.getUsersYears();
 	}
@@ -309,6 +330,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-users-months')
+	@HttpCode(HttpStatus.OK)
 	public getUsersMonths(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getUsersMonths(year);
 	}
@@ -328,6 +350,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-users-years-details')
+	@HttpCode(HttpStatus.OK)
 	public getUsersYearsDetail() {
 		return this.analyzesRepo.getUsersYearsDetail();
 	}
@@ -353,6 +376,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-users-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getUsersMonthsDetail(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getUsersMonthsDetail(year);
 	}
@@ -384,6 +408,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-users-days-details')
+	@HttpCode(HttpStatus.OK)
 	public getUsersDaysDetail(
 		@Query('year', ParseIntPipe) year: number,
 		@Query('month', ParseIntPipe) month: number
@@ -410,6 +435,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-requests-years')
+	@HttpCode(HttpStatus.OK)
 	public getRequestsYears() {
 		return this.analyzesRepo.getRequestsYears();
 	}
@@ -433,6 +459,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-requests-months')
+	@HttpCode(HttpStatus.OK)
 	public getRequestsMonths(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getRequestsMonths(year);
 	}
@@ -452,6 +479,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-requests-years-details')
+	@HttpCode(HttpStatus.OK)
 	public getRequestsYearsDetail() {
 		return this.analyzesRepo.getRequestsYearsDetail();
 	}
@@ -477,6 +505,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-requests-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getRequestsMonthsDetail(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getRequestsMonthsDetail(year);
 	}
@@ -508,6 +537,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-requests-days-details')
+	@HttpCode(HttpStatus.OK)
 	public getRequestsDaysDetail(
 		@Query('year', ParseIntPipe) year: number,
 		@Query('month', ParseIntPipe) month: number
@@ -534,6 +564,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-reports-years')
+	@HttpCode(HttpStatus.OK)
 	public getReportsYears() {
 		return this.analyzesRepo.getReportsYears();
 	}
@@ -557,6 +588,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-reports-months')
+	@HttpCode(HttpStatus.OK)
 	public getReportsMonths(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getReportsMonths(year);
 	}
@@ -576,6 +608,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-reports-years-details')
+	@HttpCode(HttpStatus.OK)
 	public getReportsYearsDetail() {
 		return this.analyzesRepo.getReportsYearsDetail();
 	}
@@ -601,6 +634,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-reports-months-details')
+	@HttpCode(HttpStatus.OK)
 	public getReportsMonthsDetail(@Query('year', ParseIntPipe) year: number) {
 		return this.analyzesRepo.getReportsMonthsDetail(year);
 	}
@@ -632,6 +666,7 @@ export class AnalyzesController {
 	})
 	//#endregion
 	@Get('get-reports-days-details')
+	@HttpCode(HttpStatus.OK)
 	public getReportsDaysDetail(
 		@Query('year', ParseIntPipe) year: number,
 		@Query('month', ParseIntPipe) month: number

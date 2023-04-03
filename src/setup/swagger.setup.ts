@@ -2,7 +2,7 @@ import { SwaggerModule } from '@nestjs/swagger';
 import { SwaggerDocuments } from './documents/swagger.document';
 import { INestApplication } from '@nestjs/common';
 
-export function appSwaggerSetup(app: INestApplication) {
+export function SwaggerSetup(app: INestApplication) {
 	SwaggerModule.setup(
 		'common',
 		app,

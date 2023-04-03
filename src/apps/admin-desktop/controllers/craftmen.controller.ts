@@ -1,6 +1,8 @@
 import {
 	Delete,
 	Get,
+	HttpCode,
+	HttpStatus,
 	Param,
 	ParseEnumPipe,
 	ParseIntPipe,
@@ -61,6 +63,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('general-craftmen')
+	@HttpCode(HttpStatus.OK)
 	public getGeneralCraftmen(
 		@Query('page_size', ParseIntPipe) pageSize: number,
 		@Query('offset', ParseIntPipe) offset: number
@@ -89,6 +92,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-craftman-details-profile/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmanDetailsProfile(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -118,6 +122,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-craftman-details-crafts/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmanDetailsCrafts(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -145,6 +150,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-craftman-details-certifications/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public getCraftmanDetailsCertifications(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -178,6 +184,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-new-members-craftmen-ids')
+	@HttpCode(HttpStatus.OK)
 	public getNewMembersCraftmenIds(
 		@Query('page_size', ParseIntPipe) pageSize: number,
 		@Query('offset', ParseIntPipe) offset: number
@@ -207,6 +214,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-new-member-craftman-profile/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public getNewMembersCraftmanProfile(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -235,6 +243,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-new-members-craftman-crafts/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public getNewMembersCraftmanCrafts(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -264,6 +273,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Get('get-new-member-craftman-certifications')
+	@HttpCode(HttpStatus.OK)
 	public getNewMembersCraftmanCertifications(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
@@ -302,6 +312,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Post('accept-new-member-craftman/:craftmanId')
+	@HttpCode(HttpStatus.CREATED)
 	public acceptNewMemberCraftman(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number,
 		@Query('level', new ParseEnumPipe(CraftmanLevel)) level: CraftmanLevel
@@ -331,6 +342,7 @@ export class CraftmenController {
 	})
 	//#endregion
 	@Delete('refuse-new-member-craftman/:craftmanId')
+	@HttpCode(HttpStatus.OK)
 	public refuseNewMemberCraftman(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {

@@ -5,18 +5,17 @@ import { VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import { NodeConfig } from './configurations/config.interfaces';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { globalSetup as appGlobalSetup } from './setup/globals.setup';
-import { securitySetup as appSecuritySetup } from './setup/security.setup';
-import { appSwaggerSetup } from './setup/swagger.setup';
+import { globalSetup } from './setup/globals.setup';
+import { securitySetup } from './setup/security.setup';
+import { SwaggerSetup } from './setup/swagger.setup';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-		logger: console,
-		bodyParser: false
+		logger: console
 	});
 
 	// Global Enhancers
-	appGlobalSetup(app);
+	globalSetup(app);
 
 	// Versioning of application
 	app.enableVersioning({
@@ -26,13 +25,13 @@ async function bootstrap() {
 	});
 
 	// Security stuff
-	appSecuritySetup(app);
+	securitySetup(app);
 
 	// Serve static assets
 	app.useStaticAssets(join(__dirname, 'assets'));
 
 	// Swagger setup
-	appSwaggerSetup(app);
+	SwaggerSetup(app);
 
 	await app.listen(app.get(ConfigService<NodeConfig>).get('PORT'));
 

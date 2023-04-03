@@ -1,4 +1,11 @@
-import { Get, Param, ParseIntPipe, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	ParseIntPipe,
+	VERSION_NEUTRAL
+} from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
 	ApiInternalServerErrorResponse,
@@ -38,6 +45,7 @@ export class SettingsController {
 	})
 	//#endregion
 	@Get('admin-profile/:adminId')
+	@HttpCode(HttpStatus.OK)
 	public getAdminProfile(@Param('adminId', ParseIntPipe) adminId: number) {
 		return this.settingsRepo.getAdminProfile(adminId);
 	}
