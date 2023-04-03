@@ -15,6 +15,7 @@ import { Environment } from 'src/helpers/constants/environments.constants';
 import { resolve } from 'path';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { CloudinaryModule } from 'nestjs-cloudinary';
+import { CompleteAuthMiddleware } from 'src/middlewares/complete-auth.middleware';
 
 @Module({
 	imports: [
@@ -43,6 +44,6 @@ import { CloudinaryModule } from 'nestjs-cloudinary';
 		})
 	],
 	controllers: [AuthController, UploadController],
-	providers: [AuthRepo, UploadRepo]
+	providers: [AuthRepo, UploadRepo, CompleteAuthMiddleware]
 })
 export class CommonControllersModule {}

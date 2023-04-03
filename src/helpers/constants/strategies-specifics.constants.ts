@@ -1,4 +1,4 @@
-export enum StrategiesSpecifics {
+export enum Strategies {
 	Facebook = 'Facebook',
 	Google = 'Google',
 	Microsoft = 'Microsoft',

@@ -3,6 +3,7 @@ import { AutomapperModule } from '@automapper/nestjs';
 import {
 	CacheModule,
 	ClassSerializerInterceptor,
+	InternalServerErrorException,
 	Module,
 	ValidationPipe
 } from '@nestjs/common';
@@ -44,7 +45,9 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { RedisClientOptions } from 'redis';
 import * as redisStore from 'cache-manager-redis-store';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
+import { Environment } from './helpers/constants/environments.constants';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { join } from 'path';
 
 @Module({
 	imports: [
@@ -67,7 +70,36 @@ import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 			useFactory: (
 				postgresConfig: ConfigService<PostgresConfig>,
 				nodeSetupConfig: NodeSetupConfig
-			) => postgresDbSource(postgresConfig, nodeSetupConfig),
+			) => ({
+				...postgresDbSource(postgresConfig),
+				entities: [join(__dirname, '**', '*.entity.js')],
+				migrations: [join(__dirname, '**', 'migrations/*.js')],
+				synchronize:
+					nodeSetupConfig.getEnvironment === Environment.Development
+						? true
+						: false,
+				logging: [
+					'error',
+					'info',
+					'warn',
+					'migration',
+					'schema',
+					'log'
+				],
+				autoLoadEntities: true,
+				connectTimeoutMS: 3000,
+				maxQueryExecutionTime: 1000 * 60 * 1,
+				migrationsRun: false,
+				metadataTableName: 'metadata',
+				migrationsTableName: 'migration',
+				namingStrategy: new SnakeNamingStrategy(),
+				applicationName: 'herafi',
+				poolErrorHandler(err) {
+					throw new InternalServerErrorException(`${err}`);
+				},
+				retryAttempts: 10,
+				retryDelay: 3000
+			}),
 			dataSourceFactory: async (options) => {
 				const dataSource = await new DataSource(options).initialize();
 				return dataSource;
@@ -81,12 +113,8 @@ import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 		AutomapperModule.forRoot({
 			strategyInitializer: classes(),
 			errorHandler: {
-				handle: (error) => {
-					throw new MappingExcetion(
-						(<Error>error).name,
-						(<Error>error).message,
-						(<Error>error).stack
-					);
+				handle: (err) => {
+					throw new InternalServerErrorException(`${err}`);
 				}
 			}
 		}),
@@ -94,7 +122,9 @@ import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 			useFactory: (redisConfig: ConfigService<RedisConfig>) => ({
 				redis: {
 					host: redisConfig.get('HOST'),
-					port: redisConfig.get('PORT')
+					port: redisConfig.get('PORT'),
+					username: redisConfig.get('USER'),
+					password: redisConfig.get('PASSWORD')
 				}
 			}),
 			inject: [ConfigService]
@@ -106,7 +136,9 @@ import { MappingExcetion } from './helpers/security/errors/custom-exceptions';
 					isGlobal: true,
 					store: redisStore,
 					host: redisConfig.get('HOST'),
-					port: redisConfig.get('PORT')
+					port: redisConfig.get('PORT'),
+					username: redisConfig.get('USER'),
+					password: redisConfig.get('PASSWORD')
 				},
 			inject: [ConfigService]
 		}),

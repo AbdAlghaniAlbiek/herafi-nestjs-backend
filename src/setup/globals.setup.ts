@@ -1,15 +1,10 @@
 import {
+	BadRequestException,
+	HttpStatus,
 	INestApplication,
-	ValidationError,
 	ValidationPipe
 } from '@nestjs/common';
-import { TimeoutInterceptor } from 'src/helpers/increptors/timeout.increptor';
-import { ValidationExcetion } from 'src/helpers/security/errors/custom-exceptions';
-import {
-	AnyExceptionsFilter,
-	HttpExceptionsFilter,
-	ValidationExcetionsFilter
-} from 'src/helpers/security/errors/exception-filter';
+import { HttpExceptionsFilter } from 'src/helpers/security/errors/exception-filter';
 
 export function globalSetup(app: INestApplication) {
 	app.setGlobalPrefix('api');
@@ -20,21 +15,13 @@ export function globalSetup(app: INestApplication) {
 			whitelist: true,
 			forbidNonWhitelisted: true,
 			stopAtFirstError: false,
+			errorHttpStatusCode: HttpStatus.BAD_REQUEST,
 			validateCustomDecorators: true,
-			exceptionFactory: (validationErrors: ValidationError[] = []) => {
-				throw new ValidationExcetion(
-					ValidationExcetion.name,
-					JSON.stringify(validationErrors)
-				);
+			exceptionFactory(errors) {
+				throw new BadRequestException(JSON.stringify(errors));
 			}
 		})
 	);
 
-	app.useGlobalFilters(
-		new ValidationExcetionsFilter(),
-		new AnyExceptionsFilter(),
-		new HttpExceptionsFilter()
-	);
-
-	app.useGlobalInterceptors(new TimeoutInterceptor());
+	app.useGlobalFilters(new HttpExceptionsFilter());
 }

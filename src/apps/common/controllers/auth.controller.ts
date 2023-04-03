@@ -21,7 +21,6 @@ import { ParseIntPipe } from '@nestjs/common/pipes';
 import { Authenticated } from 'src/helpers/decorators/auth.decorator';
 import { Person } from 'src/data/entities/person.entity';
 import { PersonRole } from 'src/data/entities/constants/person-role.constants';
-import { ValidationExcetion } from 'src/helpers/security/errors/custom-exceptions';
 
 @ApiController({ path: 'auth', version: VERSION_NEUTRAL })
 export class AuthController {
@@ -42,7 +41,7 @@ export class AuthController {
 		description:
 			'When Hashing, encrypting or decrypting data has failed || ' +
 			'When Signing Access/Refresh tokens has failed || ' +
-			'When Mapping has failed or Typeorm related error'
+			'When Mapping has failed or Typeorm related error just occured'
 	})
 	@ApiBody({
 		description: 'Person object that comes from clients applications',
@@ -109,14 +108,7 @@ export class AuthController {
 	@Post('verify-account/:personId')
 	@HttpCode(HttpStatus.OK)
 	public async verifyAccount(
-		@Param(
-			'personId',
-			new ParseIntPipe({
-				exceptionFactory(error) {
-					throw new ValidationExcetion(ParseIntPipe.name, error);
-				}
-			})
-		)
+		@Param('personId', ParseIntPipe)
 		personId: number,
 		@Query('verify_code') verifyCode: string
 	): Promise<string> {
@@ -131,7 +123,7 @@ export class AuthController {
 	@ApiBadRequestResponse({
 		description:
 			"When Body doesn't match validation rules || " +
-			"When person not found depending on its id or verify code doesn't equal ot verify_code field in db"
+			"When person not found depending on its id or verify code doesn't equal to verify_code field in db"
 	})
 	@ApiInternalServerErrorResponse({
 		description: 'When Typeorm related error just occured'
@@ -181,14 +173,7 @@ export class AuthController {
 	@Post('logout/:personId')
 	@HttpCode(HttpStatus.OK)
 	public logout(
-		@Param(
-			'personId',
-			new ParseIntPipe({
-				exceptionFactory(error) {
-					throw new ValidationExcetion(ParseIntPipe.name, error);
-				}
-			})
-		)
+		@Param('personId', ParseIntPipe)
 		personId: number
 	): Promise<string> {
 		return this.authRepo.logout(personId);

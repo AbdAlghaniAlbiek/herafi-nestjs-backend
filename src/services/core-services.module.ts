@@ -7,7 +7,7 @@ import { SecurityModule } from './security/security.module';
 
 @Global()
 @Module({
-	exports: [SecurityModule, DataModule, ConfigHelperModule, EnhancersModule],
-	imports: [SecurityModule, DataModule, ConfigHelperModule, EnhancersModule]
+	imports: [SecurityModule, DataModule, ConfigHelperModule, EnhancersModule],
+	exports: [SecurityModule, DataModule, ConfigHelperModule, EnhancersModule]
 })
 export class CoreServicesModule {}

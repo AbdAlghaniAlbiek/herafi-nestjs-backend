@@ -5,6 +5,8 @@ import {
 import {
 	Entity,
 	JoinColumn,
+	JoinTable,
+	ManyToMany,
 	ManyToOne,
 	OneToMany,
 	OneToOne,
@@ -19,16 +21,17 @@ import { Report } from './report.entity';
 import { Request } from './request.entity';
 import { Role } from './role.entity';
 import { SocialProvider } from './social-provider.entity';
+import { Craft } from './craft.entity';
 
 @Entity()
 export class Person {
 	@AutoMapPrimaryGeneratedColumn()
 	public id: number;
 
-	@AutoMapPrimaryGeneratedColumn()
+	@AutoMapColumn()
 	public firstName: string;
 
-	@AutoMapPrimaryGeneratedColumn()
+	@AutoMapColumn()
 	public lastName: string;
 
 	@AutoMapColumn()
@@ -79,10 +82,16 @@ export class Person {
 	public blockFinishDate: Date;
 
 	@AutoMapColumn()
+	public isChecked: boolean;
+
+	@AutoMapColumn()
 	public levelId: number;
 
 	@AutoMapColumn()
 	public positionId: number;
+
+	@AutoMapColumn()
+	public verified?: boolean;
 
 	@OneToMany(() => Favourite, (favourite) => favourite.person, {
 		cascade: true,
@@ -159,4 +168,22 @@ export class Person {
 		onDelete: 'CASCADE'
 	})
 	public socialProvider: SocialProvider;
+
+	@ManyToMany(() => Craft, (craft) => craft.people, {
+		onDelete: 'NO ACTION',
+		nullable: true,
+		eager: true
+	})
+	@JoinTable({
+		name: 'person_craft',
+		joinColumn: {
+			name: 'person_id',
+			referencedColumnName: 'id'
+		},
+		inverseJoinColumn: {
+			name: 'craft_id',
+			referencedColumnName: 'id'
+		}
+	})
+	public crafts: Craft[];
 }

@@ -16,7 +16,7 @@ export class Position {
 		enumName: 'craftman_position',
 		default: CraftmanPosition.Free
 	})
-	public craftmanPostion: CraftmanPosition;
+	public craftmanPosition: CraftmanPosition;
 
 	@OneToMany(() => Person, (person) => person.position, {
 		onDelete: 'NO ACTION',

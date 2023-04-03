@@ -2,8 +2,9 @@ import {
 	AutoMapColumn,
 	AutoMapPrimaryGeneratedColumn
 } from 'src/helpers/decorators/orm.decorator';
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 import { Category } from './category.entity';
+import { Person } from './person.entity';
 
 @Entity()
 export class Craft {
@@ -22,4 +23,7 @@ export class Craft {
 		referencedColumnName: 'id'
 	})
 	public category: Category;
+
+	@ManyToMany(() => Person, (person) => person.crafts)
+	public people: Person[];
 }
