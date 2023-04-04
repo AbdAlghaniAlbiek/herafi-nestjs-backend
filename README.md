@@ -16,9 +16,9 @@ This project considered as rebuild or refresh the current [herafi_backend](https
 
 ### NestJS
 
--   A progressive Node.js framework for building efficient, reliable and scalable server-side applications.
--   It uses progressive JavaScript, is built with and fully supports TypeScript and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).
--   Nest provides an out-of-the-box application architecture which allows developers and teams to create highly testable, scalable, loosely coupled, and easily maintainable applications. The architecture is heavily inspired by Angular.
+- A progressive Node.js framework for building efficient, reliable and scalable server-side applications.
+- It uses progressive JavaScript, is built with and fully supports TypeScript and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).
+- Nest provides an out-of-the-box application architecture which allows developers and teams to create highly testable, scalable, loosely coupled, and easily maintainable applications. The architecture is heavily inspired by Angular.
 
 ### About
 
@@ -28,10 +28,10 @@ Architecture of this project is crafted so carefully so you can see each folder 
 
 # Table of content
 
--   [Setup](#setup)
--   [Libraries Used](#libraries-used)
--   [Versions](#versions)
--   [Project Status](project-status)
+- [Setup](#setup)
+- [Libraries Used](#libraries-used)
+- [Versions](#versions)
+- [Project Status](project-status)
 
 ## 🚩 Setup
 
@@ -140,9 +140,9 @@ All data that comes from clients' requests in **_Body_** validated (either in bo
 
 Implementing the required middlewares to make server protected from any maleware, spyware, warm viruses.... by using these middlewares
 
--   `CORS` (Cross Origin Resource Sharing) an HTTP-header based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources
--   `Helmet`, Helps in setting various HTTP headers that protect headers from any potentialy threat
--   `CSRF` (Cross-Site Request Forgery) protect from attack that forces authenticated users to submit a request to a Web application against which they are currently authenticated
+- `CORS` (Cross Origin Resource Sharing) an HTTP-header based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources
+- `Helmet`, Helps in setting various HTTP headers that protect headers from any potentialy threat
+- `CSRF` (Cross-Site Request Forgery) protect from attack that forces authenticated users to submit a request to a Web application against which they are currently authenticated
 
 ## Versions
 

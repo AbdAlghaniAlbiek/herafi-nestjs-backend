@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
-	AuthPerson,
+	AuthPersonDto,
 	CreatePersonDto
 } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { HashCryptography } from '../../../../services/security/cryptography/hash.crypto';
+import { HashCryptography } from '../../../services/security/cryptography/hash.crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from 'src/data/entities/person.entity';
 import { Repository } from 'typeorm';
@@ -17,8 +17,11 @@ import {
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CRUD } from 'src/helpers/constants/crud.contants';
-import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
-import { InternalServerErrorException } from '@nestjs/common/exceptions';
+import { AESCryptography } from '../../../services/security/cryptography/aes.crypto';
+import {
+	InternalServerErrorException,
+	NotFoundException
+} from '@nestjs/common/exceptions';
 import { MailQueueProducer } from 'src/services/enhancers/queues/producers/mail.producer';
 import { SocialProvider } from 'src/data/entities/social-provider.entity';
 
@@ -44,7 +47,7 @@ export class AuthRepo {
 			});
 
 			if (userExists) {
-				throw new BadRequestException(
+				throw new NotFoundException(
 					AuthResultMessages.personsAlreadyExist(
 						createPersonDto.email
 					)
@@ -110,7 +113,7 @@ export class AuthRepo {
 				verifyCode
 			});
 			if (!socialProviderPerson)
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with id: ${personId}`
 					)
@@ -139,14 +142,14 @@ export class AuthRepo {
 		}
 	}
 
-	async signIn(authPerson: AuthPerson): Promise<string> {
+	async signIn(authPerson: AuthPersonDto): Promise<string> {
 		try {
 			// Check if person exists
 			const person = await this.personRepo.findOneBy({
 				email: authPerson.email
 			});
 			if (!person)
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with email: ${authPerson.email}`
 					)
@@ -191,7 +194,7 @@ export class AuthRepo {
 		try {
 			const person = this.personRepo.findOneBy({ id: personId });
 			if (!person) {
-				throw new BadRequestException(
+				throw new NotFoundException(
 					CrudResultMessages.itemNotFound(
 						`Person with id: ${personId}`
 					)

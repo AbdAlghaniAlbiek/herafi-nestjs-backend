@@ -1,4 +1,4 @@
-import { Get, VERSION_NEUTRAL } from '@nestjs/common';
+import { Get, HttpCode, HttpStatus, VERSION_NEUTRAL } from '@nestjs/common';
 import {
 	ApiInternalServerErrorResponse,
 	ApiOkResponse,
@@ -6,8 +6,11 @@ import {
 } from '@nestjs/swagger';
 import { ProfitsPerDays } from 'src/data/dtos/admin-dtos/responses/dashboard-response.dto';
 import { DashboardRepo } from 'src/data/repositories/admin-repos/dashboard.repo';
+import { UserRole } from 'src/helpers/constants/user-role.constants';
+import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
 
+@Authorized(UserRole.Admin)
 @ApiController({ path: 'dashboard', version: VERSION_NEUTRAL })
 export class DashboardController {
 	constructor(private dashboardRepo: DashboardRepo) {}
@@ -23,6 +26,7 @@ export class DashboardController {
 	})
 	//#endregion
 	@Get('get-profits-per-day')
+	@HttpCode(HttpStatus.OK)
 	public getProfitsPerDay() {
 		return this.dashboardRepo.getProfitsPerDay();
 	}
@@ -38,6 +42,7 @@ export class DashboardController {
 	})
 	//#endregion
 	@Get('get-new-members')
+	@HttpCode(HttpStatus.OK)
 	public getNewMembers() {
 		return this.dashboardRepo.getNewMembers();
 	}

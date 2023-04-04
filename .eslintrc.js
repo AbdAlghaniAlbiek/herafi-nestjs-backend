@@ -29,7 +29,6 @@ module.exports = {
 				singleQuote: true,
 				trailingComma: 'none',
 				allowPrens: 'avoid',
-				tabWidth: 4,
 				useTabs: true,
 				bracketSpacing: true,
 				bracketSameLine: true,

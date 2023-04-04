@@ -1,7 +1,15 @@
-import { Get, Param, ParseIntPipe, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+	Get,
+	HttpCode,
+	HttpStatus,
+	Param,
+	ParseIntPipe,
+	VERSION_NEUTRAL
+} from '@nestjs/common';
 import {
 	ApiBadRequestResponse,
 	ApiInternalServerErrorResponse,
+	ApiNotFoundResponse,
 	ApiOkResponse,
 	ApiOperation,
 	ApiParam
@@ -27,6 +35,9 @@ export class SettingsController {
 		description:
 			'When Param not match specified rules || When id not match any admin account in db'
 	})
+	@ApiNotFoundResponse({
+		description: "When id of admin doesn't exist in db"
+	})
 	@ApiInternalServerErrorResponse({
 		description: 'When TypeOrm related error just occurs'
 	})
@@ -38,6 +49,7 @@ export class SettingsController {
 	})
 	//#endregion
 	@Get('admin-profile/:adminId')
+	@HttpCode(HttpStatus.OK)
 	public getAdminProfile(@Param('adminId', ParseIntPipe) adminId: number) {
 		return this.settingsRepo.getAdminProfile(adminId);
 	}
