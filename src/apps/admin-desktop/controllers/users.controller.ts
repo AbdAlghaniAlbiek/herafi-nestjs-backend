@@ -9,7 +9,7 @@ import {
 	VERSION_NEUTRAL
 } from '@nestjs/common';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
-import { UsersRepo } from '../../../data/repositories/admin-repos/users.repo';
+import { UsersRepo } from '../../../data/repositories/controllers-repos/admin-repos/users.repo';
 import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import {
@@ -95,9 +95,7 @@ export class UsersController {
 	//#endregion
 	@Get('user-details-profile/:userId')
 	@HttpCode(HttpStatus.OK)
-	public getUserDetailsProfile(
-		@Param('userId', ParseIntPipe) userId: number
-	) {
+	public getUserDetailsProfile(@Param('userId', ParseIntPipe) userId: number) {
 		return this.usersRepo.getUserDetailsProfile(userId);
 	}
 
@@ -124,9 +122,7 @@ export class UsersController {
 	//#endregion
 	@Get('user-details-requests')
 	@HttpCode(HttpStatus.OK)
-	public getUserDetailsRequest(
-		@Param('userId', ParseIntPipe) userId: number
-	) {
+	public getUserDetailsRequest(@Param('userId', ParseIntPipe) userId: number) {
 		return this.usersRepo.getUserDetailsRequest(userId);
 	}
 
