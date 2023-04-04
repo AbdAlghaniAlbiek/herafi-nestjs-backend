@@ -19,7 +19,7 @@ import {
 	ProfitsPerDateDetailsDto,
 	ProfitsPerDayDetailsDto
 } from 'src/data/dtos/admin-dtos/responses/analyzes-response.dto';
-import { AnalyzesRepo } from 'src/data/repositories/controllers-repos/admin-repos/analyzes.repo';
+import { AnalyzesRepo } from 'src/data/repositories/admin-repos/analyzes.repo';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
@@ -296,7 +296,8 @@ export class AnalyzesController {
 	//#region swagger config
 	@ApiOperation({ summary: 'Get yearly users registeration average' })
 	@ApiOkResponse({
-		description: 'Getting the yearly users registeration average successfuly',
+		description:
+			'Getting the yearly users registeration average successfuly',
 		type: [Number],
 		isArray: true
 	})
@@ -313,7 +314,8 @@ export class AnalyzesController {
 	//#region swagger config
 	@ApiOperation({ summary: 'Get monthly users registeration average' })
 	@ApiOkResponse({
-		description: 'Getting the users craftmen registeration average successfuly',
+		description:
+			'Getting the users craftmen registeration average successfuly',
 		type: [Number],
 		isArray: true
 	})
@@ -552,7 +554,8 @@ export class AnalyzesController {
 	//#region swagger config
 	@ApiOperation({ summary: 'Get yearly reports registeration average' })
 	@ApiOkResponse({
-		description: 'Getting the yearly reports registeration average successfuly',
+		description:
+			'Getting the yearly reports registeration average successfuly',
 		type: [Number],
 		isArray: true
 	})

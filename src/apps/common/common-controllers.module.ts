@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
+import { AuthRepo } from 'src/data/repositories/common-repos/auth.repo';
 import { AuthController } from './controllers/auth.controller';
 import { MulterModule } from '@nestjs/platform-express';
 import { UploadController } from './controllers/upload.controller';
-import { UploadRepo } from 'src/data/repositories/controllers-repos/common-repos/upload.repo';
+import { UploadRepo } from 'src/data/repositories/common-repos/upload.repo';
 import { diskStorage } from 'multer';
 import { fileNameModifier } from 'src/helpers/resolvers/upload-file.resolver';
 import { ConfigService } from '@nestjs/config';
@@ -15,7 +15,6 @@ import { Environment } from 'src/helpers/constants/environments.constants';
 import { resolve } from 'path';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { CloudinaryModule } from 'nestjs-cloudinary';
-import { CompleteAuthMiddleware } from 'src/middlewares/complete-auth.middleware';
 
 @Module({
 	imports: [
@@ -44,6 +43,6 @@ import { CompleteAuthMiddleware } from 'src/middlewares/complete-auth.middleware
 		})
 	],
 	controllers: [AuthController, UploadController],
-	providers: [AuthRepo, UploadRepo, CompleteAuthMiddleware]
+	providers: [AuthRepo, UploadRepo]
 })
 export class CommonControllersModule {}

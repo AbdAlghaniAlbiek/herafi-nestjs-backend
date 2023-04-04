@@ -15,7 +15,7 @@ import {
 	ApiParam
 } from '@nestjs/swagger';
 import { AdminProfileDto } from 'src/data/dtos/admin-dtos/responses/settings-respons.dto';
-import { SettingsRepo } from 'src/data/repositories/controllers-repos/admin-repos/settings.repo';
+import { SettingsRepo } from 'src/data/repositories/admin-repos/settings.repo';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';

@@ -5,7 +5,7 @@ import {
 } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { HashCryptography } from '../../../../services/security/cryptography/hash.crypto';
+import { HashCryptography } from '../../../services/security/cryptography/hash.crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Person } from 'src/data/entities/person.entity';
 import { Repository } from 'typeorm';
@@ -17,7 +17,7 @@ import {
 import { InjectMapper } from '@automapper/nestjs';
 import { Mapper } from '@automapper/core';
 import { CRUD } from 'src/helpers/constants/crud.contants';
-import { AESCryptography } from '../../../../services/security/cryptography/aes.crypto';
+import { AESCryptography } from '../../../services/security/cryptography/aes.crypto';
 import {
 	InternalServerErrorException,
 	NotFoundException

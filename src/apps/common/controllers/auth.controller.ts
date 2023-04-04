@@ -1,7 +1,7 @@
 import { VERSION_NEUTRAL } from '@nestjs/common/interfaces';
 import { Post, Body, Param, Query, HttpCode } from '@nestjs/common';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
-import { AuthRepo } from 'src/data/repositories/controllers-repos/common-repos/auth.repo';
+import { AuthRepo } from 'src/data/repositories/common-repos/auth.repo';
 import { HttpStatus } from '@nestjs/common/enums';
 import {
 	ApiBadRequestResponse,

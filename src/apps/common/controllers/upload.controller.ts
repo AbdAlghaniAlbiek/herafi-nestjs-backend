@@ -11,7 +11,7 @@ import {
 	ParseIntPipe,
 	ParseEnumPipe
 } from '@nestjs/common';
-import { UploadRepo } from 'src/data/repositories/controllers-repos/common-repos/upload.repo';
+import { UploadRepo } from 'src/data/repositories/common-repos/upload.repo';
 import {
 	ApiBadRequestResponse,
 	ApiBody,

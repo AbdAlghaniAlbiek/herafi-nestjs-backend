@@ -28,7 +28,7 @@ import {
 } from 'src/data/dtos/admin-dtos/responses/craftmen-response.dto';
 import { CraftmanLevel } from 'src/data/entities/constants/craftman-level.constants';
 import { Person } from 'src/data/entities/person.entity';
-import { CraftmenRepo } from 'src/data/repositories/controllers-repos/admin-repos/craftmen.repo';
+import { CraftmenRepo } from 'src/data/repositories/admin-repos/craftmen.repo';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
@@ -105,7 +105,8 @@ export class CraftmenController {
 	//#region swagger config
 	@ApiOperation({ summary: "Get craftman's categories with its crafts" })
 	@ApiOkResponse({
-		description: "Getting craftman's categories with its crafts successfuly",
+		description:
+			"Getting craftman's categories with its crafts successfuly",
 		type: [CraftmanCategoryCrafts],
 		isArray: true
 	})
@@ -201,7 +202,8 @@ export class CraftmenController {
 	//#region swagger config
 	@ApiOperation({ summary: 'Get profile details of new memeber craftman' })
 	@ApiOkResponse({
-		description: 'Getting profile details of new memeber craftman successfuly',
+		description:
+			'Getting profile details of new memeber craftman successfuly',
 		type: NewMembersCraftmanProfile
 	})
 	@ApiBadRequestResponse({
@@ -263,7 +265,8 @@ export class CraftmenController {
 	//#region swagger config
 	@ApiOperation({ summary: 'Get certifications of new craftman member' })
 	@ApiOkResponse({
-		description: 'Getting certifications of new craftman member successfuly',
+		description:
+			'Getting certifications of new craftman member successfuly',
 		type: [CraftmanCategoryCrafts],
 		isArray: true
 	})
@@ -286,7 +289,9 @@ export class CraftmenController {
 	public getNewMembersCraftmanCertifications(
 		@Param('craftmanId', ParseIntPipe) craftmanId: number
 	) {
-		return this.craftmenRepo.getNewMembersCraftmanCertifications(craftmanId);
+		return this.craftmenRepo.getNewMembersCraftmanCertifications(
+			craftmanId
+		);
 	}
 
 	//#region swagger config
@@ -294,7 +299,8 @@ export class CraftmenController {
 		summary: 'Accepting a new craftman member to Herafi system'
 	})
 	@ApiCreatedResponse({
-		description: 'Adding a new craftman member to Herafi system successfuly',
+		description:
+			'Adding a new craftman member to Herafi system successfuly',
 		type: Person
 	})
 	@ApiBadRequestResponse({

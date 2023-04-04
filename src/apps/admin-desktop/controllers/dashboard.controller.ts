@@ -5,7 +5,7 @@ import {
 	ApiOperation
 } from '@nestjs/swagger';
 import { ProfitsPerDays } from 'src/data/dtos/admin-dtos/responses/dashboard-response.dto';
-import { DashboardRepo } from 'src/data/repositories/controllers-repos/admin-repos/dashboard.repo';
+import { DashboardRepo } from 'src/data/repositories/admin-repos/dashboard.repo';
 import { UserRole } from 'src/helpers/constants/user-role.constants';
 import { Authorized } from 'src/helpers/decorators/auth.decorator';
 import { ApiController } from 'src/helpers/decorators/swagger.decorator';
