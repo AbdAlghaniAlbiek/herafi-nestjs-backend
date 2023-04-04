@@ -14,7 +14,7 @@ import {
 import { PersonRole } from 'src/data/entities/constants/person-role.constants';
 import { AutoMapApiProperty } from 'src/helpers/decorators/swagger.decorator';
 
-export class AuthPerson {
+export class AuthPersonDto {
 	@IsEmail({ domain_specific_validation: true })
 	@IsNotEmpty()
 	@AutoMapApiProperty()

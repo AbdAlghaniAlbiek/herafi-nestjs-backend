@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import {
-	AuthPerson,
+	AuthPersonDto,
 	CreatePersonDto
 } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -142,7 +142,7 @@ export class AuthRepo {
 		}
 	}
 
-	async signIn(authPerson: AuthPerson): Promise<string> {
+	async signIn(authPerson: AuthPersonDto): Promise<string> {
 		try {
 			// Check if person exists
 			const person = await this.personRepo.findOneBy({

@@ -34,7 +34,7 @@ import {
 import { TimeoutInterceptor } from './helpers/increptors/timeout.increptor';
 import { CoreServicesModule } from './services/core-services.module';
 import { NodeSetupConfig } from './services/config/node-setup.config';
-import { postgresDbSource } from 'src/data/data-source/postgres-db-source';
+import { HerafiDbSource } from 'src/data/data-source/postgres-db-source';
 
 import { AdminDesktopModule } from './apps/admin-desktop/admin-desktop.module';
 import { CraftmanMobileModule } from './apps/craftman-mobile/craftman-mobile.module';
@@ -71,7 +71,7 @@ import { join } from 'path';
 				postgresConfig: ConfigService<PostgresConfig>,
 				nodeSetupConfig: NodeSetupConfig
 			) => ({
-				...postgresDbSource(postgresConfig),
+				...HerafiDbSource(postgresConfig),
 				entities: [join(__dirname, '**', '*.entity.js')],
 				migrations: [join(__dirname, '**', 'migrations/*.js')],
 				synchronize:

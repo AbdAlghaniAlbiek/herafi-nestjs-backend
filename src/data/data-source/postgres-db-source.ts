@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { PostgresConfig } from 'src/configurations/config.interfaces';
 
-export function postgresDbSource(
+export function HerafiDbSource(
 	postgresConfig: ConfigService<PostgresConfig>
 ): TypeOrmModuleOptions {
 	return {

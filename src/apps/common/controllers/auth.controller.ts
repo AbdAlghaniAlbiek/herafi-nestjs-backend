@@ -14,7 +14,7 @@ import {
 	ApiQuery
 } from '@nestjs/swagger';
 import {
-	AuthPerson as AuthDtoPerson,
+	AuthPersonDto as AuthDtoPerson,
 	CreatePersonDto
 } from 'src/data/dtos/common-dtos/requests/auth-request.dto';
 import { ParseIntPipe } from '@nestjs/common/pipes';

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+	Injectable,
+	InternalServerErrorException,
+	NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AdminProfileDto } from 'src/data/dtos/admin-dtos/responses/settings-respons.dto';
 import { City } from 'src/data/entities/city.entity';
@@ -16,7 +20,9 @@ export class SettingsRepo {
 
 	public async getAdminProfile(adminId) {
 		try {
-			const isAdminExist = this.personRepo.findOneBy({ id: adminId });
+			const isAdminExist = await this.personRepo.findOneBy({
+				id: adminId
+			});
 
 			if (!isAdminExist) {
 				throw new NotFoundException(
@@ -82,6 +88,8 @@ export class SettingsRepo {
 				adminProfile.profile_image,
 				adminProfile.personal_identity_image
 			);
-		} catch (err) {}
+		} catch (err) {
+			throw new InternalServerErrorException(`${err}`);
+		}
 	}
 }
